@@ -14,6 +14,9 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     
     <!-- Konfigurasi Tema Warna Pastel -->
     <script>
@@ -37,12 +40,87 @@
     </script>
 
     <style>
-        body { background-color: #f8faf9; color: #374151; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e5e7eb; border-radius: 12px; }
-        .input-pastel { border: 1px solid #e5e7eb; background-color: #fafafa; transition: all 0.3s ease; }
+        body { 
+            background-color: #f8faf9; 
+            color: #374151; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+        }
+        
+        /* Layer khusus untuk background blur */
+        body::before {
+            content: "";
+            position: fixed;
+            top: -15px; left: -15px; right: -15px; bottom: -15px;
+            background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh4292JFPuEZJFd5Shmdr8SMRdEO2p-qqlyzGntTKniidwO07d6rHiv-dc9n18UGKdc1lxBQL6nlqfuZ6CIeeaz4v3cB-M4kS7pdJmyPpN-5vWBaB1i76noOt-drNtyBqjkd5099E-oeRjrc_wyWz1M0bJds-tsNWcU3UrTMVAxuktZ7I_JZc9LkD0SzODs/s0/b7245d154b4f36db57e0bf4b419e01f8.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(9px); 
+            z-index: -1; 
+        }
+
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.88); 
+            backdrop-filter: blur(12px); 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); 
+            border: 1px solid #e5e7eb; 
+            border-radius: 12px; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-pastel { border: 1px solid #e5e7eb; background-color: rgba(255, 255, 255, 0.9); transition: all 0.3s ease; }
         .input-pastel:focus { outline: none; border-color: #88b5a1; box-shadow: 0 0 0 3px rgba(136, 181, 161, 0.2); }
-        .btn-pastel { background-color: #88b5a1; color: white; transition: all 0.3s ease; }
-        .btn-pastel:hover { background-color: #729b88; transform: translateY(-1px); }
+        
+        /* --- ANIMASI & GRADASI TOMBOL --- */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .btn-pastel { 
+            background: linear-gradient(135deg, #88b5a1, #6b9e8a, #a1b5d8, #88b5a1);
+            background-size: 300% 300%;
+            color: white; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(136, 181, 161, 0.3);
+        }
+        .btn-pastel:hover { 
+            animation: gradientMove 3s ease infinite;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px -3px rgba(136, 181, 161, 0.4);
+        }
+        .btn-pastel:active {
+            transform: translateY(0);
+        }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #a855f7, #6366f1, #ec4899, #a855f7);
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(168, 85, 247, 0.3);
+        }
+        .btn-ai:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 15px -3px rgba(168, 85, 247, 0.5);
+        }
+
+        /* Teks Bergradasi */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(135deg, #6b9e8a, #4a708b);
+            display: inline-block;
+        }
+
         .hidden { display: none !important; }
         
         ::-webkit-scrollbar { width: 6px; }
@@ -62,15 +140,19 @@
 <body class="min-h-screen flex flex-col antialiased">
 
     <!-- Header -->
-    <header class="bg-pastel-card shadow-sm sticky top-0 z-50 border-b border-pastel-border">
+    <header class="bg-pastel-card shadow-sm sticky top-0 z-50 border-b border-pastel-border border-t-4 border-t-pastel-primary">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-pastel-secondary flex items-center justify-center text-white font-bold text-sm shadow-inner">MP</div>
-                <h1 class="text-lg font-semibold text-pastel-text">Metodologi Penelitian</h1>
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-pastel-primary to-pastel-secondary flex items-center justify-center text-white shadow-inner">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                </div>
+                <h1 class="text-xl font-extrabold text-gradient">Metodologi Penelitian</h1>
             </div>
             <div id="user-info" class="hidden flex items-center gap-4">
                 <span id="user-greeting" class="text-sm font-medium text-gray-600"></span>
-                <button onclick="logout()" class="text-sm text-red-500 hover:text-red-700 font-medium transition-colors">Keluar</button>
+                <button onclick="logout()" class="text-sm text-red-500 hover:text-red-700 font-medium transition-colors bg-red-50 px-3 py-1.5 rounded-md hover:bg-red-100 flex items-center gap-1.5">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Keluar
+                </button>
             </div>
         </div>
     </header>
@@ -82,26 +164,26 @@
         <div id="view-login" class="max-w-md mx-auto mt-10">
             <div class="glass-card p-8">
                 <div class="text-center mb-8">
-                    <h2 class="text-2xl font-bold text-pastel-text mb-2">Selamat Datang</h2>
-                    <p class="text-sm text-gray-500">Silakan masuk ke Portal LMS Anda</p>
+                    <h2 class="text-3xl font-extrabold text-gradient mb-2">Selamat Datang</h2>
+                    <p class="text-sm text-gray-500 font-medium">Silakan masuk ke Portal LMS Anda</p>
                 </div>
                 
                 <form id="login-form" class="space-y-5" onsubmit="handleLogin(event)">
                     <div>
-                        <label id="lbl-username" class="block text-sm font-medium text-gray-700 mb-1">ID Pengguna / NIM / Email</label>
-                        <input type="text" id="login-username" required class="w-full input-pastel rounded-lg p-2.5 text-sm" placeholder="Masukkan NIM atau Email">
+                        <label id="lbl-username" class="block text-sm font-semibold text-gray-700 mb-1">ID Pengguna / NIM / Email</label>
+                        <input type="text" id="login-username" required class="w-full input-pastel rounded-lg p-2.5 text-sm" placeholder="Masukkan ID Admin, NIM, atau Email">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Kata Sandi</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Kata Sandi</label>
                         <input type="password" id="login-password" required class="w-full input-pastel rounded-lg p-2.5 text-sm" placeholder="••••••••">
                     </div>
-                    <div id="login-error" class="hidden text-sm text-red-500 bg-red-50 p-2.5 rounded-lg border border-red-100 text-center"></div>
-                    <button type="submit" id="btn-login" class="w-full btn-pastel font-medium rounded-lg p-2.5 text-sm flex justify-center items-center gap-2">
-                        Masuk
+                    <div id="login-error" class="hidden text-sm text-red-500 bg-red-50 p-2.5 rounded-lg border border-red-100 text-center font-medium"></div>
+                    <button type="submit" id="btn-login" class="w-full btn-pastel font-bold rounded-lg p-3 text-sm flex justify-center items-center gap-2 tracking-wide">
+                        <i data-lucide="log-in" class="w-4 h-4"></i> Masuk
                     </button>
                 </form>
                 <div class="mt-6 text-center text-sm text-gray-500">
-                    Belum punya akun mahasiswa? <button type="button" onclick="switchView('view-register')" class="text-pastel-primary font-bold hover:underline">Daftar di sini</button>
+                    Belum punya akun mahasiswa? <button type="button" onclick="switchView('view-register')" class="text-pastel-primary font-bold hover:text-pastel-secondary transition-colors underline-offset-2 hover:underline">Daftar di sini</button>
                 </div>
             </div>
         </div>
@@ -110,105 +192,105 @@
         <div id="view-register" class="hidden max-w-md mx-auto mt-10">
             <div class="glass-card p-8">
                 <div class="text-center mb-8">
-                    <h2 class="text-2xl font-bold text-pastel-text mb-2">Registrasi Mahasiswa</h2>
+                    <h2 class="text-2xl font-extrabold text-gradient mb-2">Registrasi Mahasiswa</h2>
                     <p class="text-sm text-gray-500">Buat akun agar bisa mengakses materi dan tugas</p>
                 </div>
                 
                 <form id="register-form" class="space-y-4" onsubmit="handleRegister(event)">
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">NIM (Nomor Induk Mahasiswa)</label>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">NIM (Nomor Induk Mahasiswa)</label>
                         <input type="text" id="reg-nim" required class="w-full input-pastel rounded-md p-2.5 text-sm" placeholder="Contoh: 2024001">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Lengkap</label>
                         <input type="text" id="reg-nama" required class="w-full input-pastel rounded-md p-2.5 text-sm" placeholder="Nama sesuai identitas">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Email Aktif</label>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Email Aktif</label>
                         <input type="email" id="reg-email" required class="w-full input-pastel rounded-md p-2.5 text-sm" placeholder="email@contoh.com">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Kata Sandi</label>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Kata Sandi</label>
                         <input type="password" id="reg-password" required minlength="6" class="w-full input-pastel rounded-md p-2.5 text-sm" placeholder="Minimal 6 karakter">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Konfirmasi Kata Sandi</label>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Konfirmasi Kata Sandi</label>
                         <input type="password" id="reg-password-confirm" required minlength="6" class="w-full input-pastel rounded-md p-2.5 text-sm" placeholder="Ketik ulang kata sandi">
                     </div>
                     
-                    <div id="reg-error" class="hidden text-xs text-red-500 bg-red-50 p-2 rounded-md border border-red-100 text-center"></div>
-                    <div id="reg-success" class="hidden text-xs text-green-600 bg-green-50 p-2 rounded-md border border-green-100 text-center"></div>
+                    <div id="reg-error" class="hidden text-xs text-red-500 bg-red-50 p-2 rounded-md border border-red-100 text-center font-medium"></div>
+                    <div id="reg-success" class="hidden text-xs text-green-600 bg-green-50 p-2 rounded-md border border-green-100 text-center font-medium"></div>
 
-                    <button type="submit" id="btn-register" class="w-full btn-pastel font-medium rounded-lg p-2.5 text-sm mt-2">
-                        Daftar Sekarang
+                    <button type="submit" id="btn-register" class="w-full btn-pastel font-bold rounded-lg p-3 text-sm mt-2 flex justify-center items-center gap-2 tracking-wide">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i> Daftar Sekarang
                     </button>
                 </form>
                 <div class="mt-6 text-center text-sm text-gray-500">
-                    Sudah punya akun? <button type="button" onclick="switchView('view-login')" class="text-pastel-primary font-bold hover:underline">Masuk</button>
+                    Sudah punya akun? <button type="button" onclick="switchView('view-login')" class="text-pastel-primary font-bold hover:text-pastel-secondary transition-colors underline-offset-2 hover:underline">Masuk</button>
                 </div>
             </div>
         </div>
 
         <!-- 2. DOSEN DASHBOARD VIEW -->
         <div id="view-dosen" class="hidden space-y-6">
-            <div class="bg-pastel-secondary/10 border border-pastel-secondary/20 rounded-xl p-6 mb-6">
-                <h2 class="text-xl font-bold text-pastel-text mb-2">Dashboard Dosen</h2>
+            <div class="bg-pastel-secondary/10 border border-pastel-secondary/20 rounded-xl p-6 mb-6 shadow-sm">
+                <h2 class="text-2xl font-extrabold text-gradient mb-2">Dashboard Dosen</h2>
                 <p class="text-sm text-gray-600">Kelola data mahasiswa, materi kuliah, tugas, dan nilai.</p>
             </div>
 
             <!-- Tab Navigasi -->
-            <div class="flex border-b border-gray-200 mb-6 overflow-x-auto">
-                <button onclick="switchDosenTab('mhs')" id="btn-tab-mhs" class="py-2 px-6 text-sm font-semibold border-b-2 border-pastel-primary text-pastel-primary transition-colors whitespace-nowrap">Kelola Mahasiswa</button>
-                <button onclick="switchDosenTab('materi')" id="btn-tab-materi" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap">Kelola Materi</button>
-                <button onclick="switchDosenTab('soal')" id="btn-tab-soal" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap">Kelola Soal/Tugas</button>
-                <button onclick="switchDosenTab('nilai')" id="btn-tab-nilai" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap">Kelola Nilai</button>
-                <button onclick="switchDosenTab('tugas')" id="btn-tab-tugas" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap">✨ Assessment AI</button>
+            <div class="flex border-b border-gray-200 mb-6 overflow-x-auto pb-1">
+                <button onclick="switchDosenTab('mhs')" id="btn-tab-mhs" class="py-2 px-6 text-sm font-bold border-b-2 border-pastel-primary text-pastel-primary transition-colors whitespace-nowrap flex items-center gap-1.5"><i data-lucide="users" class="w-4 h-4"></i> Kelola Mahasiswa</button>
+                <button onclick="switchDosenTab('materi')" id="btn-tab-materi" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap flex items-center gap-1.5"><i data-lucide="book-open" class="w-4 h-4"></i> Kelola Materi</button>
+                <button onclick="switchDosenTab('soal')" id="btn-tab-soal" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap flex items-center gap-1.5"><i data-lucide="clipboard-list" class="w-4 h-4"></i> Kelola Soal/Tugas</button>
+                <button onclick="switchDosenTab('nilai')" id="btn-tab-nilai" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap flex items-center gap-1.5"><i data-lucide="award" class="w-4 h-4"></i> Kelola Nilai</button>
+                <button onclick="switchDosenTab('tugas')" id="btn-tab-tugas" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4"></i> Assessment AI</button>
             </div>
 
             <!-- TAB 1: Kelola Mahasiswa -->
             <div id="dosen-tab-mhs" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="glass-card p-6 md:col-span-1 h-fit">
-                    <h3 class="text-lg font-semibold mb-4 border-b pb-2">Tambah/Edit Mahasiswa</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2"><i data-lucide="user" class="w-5 h-5 text-pastel-primary"></i> Tambah/Edit Mahasiswa</h3>
                     <form id="form-add-mhs" onsubmit="handleAddMahasiswa(event)" class="space-y-4">
                         <input type="hidden" id="add-mhs-id" value="">
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">NIM</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">NIM</label>
                             <input type="text" id="add-nim" required class="w-full input-pastel rounded-md p-2 text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Nama Lengkap</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Nama Lengkap</label>
                             <input type="text" id="add-nama" required class="w-full input-pastel rounded-md p-2 text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Email (Opsional)</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Email (Opsional)</label>
                             <input type="email" id="add-email" class="w-full input-pastel rounded-md p-2 text-sm" placeholder="email@contoh.com">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Kata Sandi</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Kata Sandi</label>
                             <input type="text" id="add-password" required class="w-full input-pastel rounded-md p-2 text-sm" value="mhs123">
                         </div>
                         <div class="flex gap-2">
-                            <button type="submit" id="btn-submit-mhs" class="flex-1 btn-pastel font-medium rounded-md p-2 text-sm">Simpan Data</button>
-                            <button type="button" id="btn-cancel-mhs" onclick="cancelEditMahasiswa()" class="hidden flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors font-medium rounded-md p-2 text-sm">Batal</button>
+                            <button type="submit" id="btn-submit-mhs" class="flex-1 btn-pastel font-bold rounded-md p-2 text-sm flex justify-center items-center gap-1.5"><i data-lucide="save" class="w-4 h-4"></i> Simpan Data</button>
+                            <button type="button" id="btn-cancel-mhs" onclick="cancelEditMahasiswa()" class="hidden flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors font-bold rounded-md p-2 text-sm flex justify-center items-center gap-1.5"><i data-lucide="x" class="w-4 h-4"></i> Batal</button>
                         </div>
                     </form>
                     
                     <div class="mt-6 border-t pt-4">
-                        <h4 class="text-xs font-semibold text-gray-500 mb-2">Import Massal (CSV Format)</h4>
+                        <h4 class="text-xs font-bold text-gray-500 mb-2">Import Massal (CSV Format)</h4>
                         <p class="text-[10px] text-gray-400 mb-2">Format: NIM,Nama,Password</p>
                         <textarea id="import-csv" rows="3" class="w-full input-pastel rounded-md p-2 text-xs font-mono placeholder-gray-300" placeholder="202401,Andi,mhs123&#10;202402,Siti,mhs123"></textarea>
-                        <button onclick="handleImportCSV()" class="mt-2 w-full bg-pastel-secondary text-white hover:bg-opacity-90 transition-colors font-medium rounded-md p-2 text-sm">Import CSV</button>
+                        <button onclick="handleImportCSV()" class="mt-2 w-full bg-pastel-secondary text-white hover:bg-opacity-90 transition-colors font-bold rounded-md p-2 text-sm flex justify-center items-center gap-1.5"><i data-lucide="upload" class="w-4 h-4"></i> Import CSV</button>
                     </div>
                 </div>
 
                 <div class="glass-card p-6 md:col-span-2">
                     <div class="flex justify-between items-center mb-4 border-b pb-2">
-                        <h3 class="text-lg font-semibold">Daftar Mahasiswa Terdaftar</h3>
-                        <button onclick="loadMahasiswa()" class="text-xs text-pastel-primary hover:underline">Segarkan Data</button>
+                        <h3 class="text-lg font-bold text-gray-800">Daftar Mahasiswa Terdaftar</h3>
+                        <button onclick="loadMahasiswa()" class="text-xs text-pastel-primary font-bold hover:underline flex items-center gap-1"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh</button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 rounded-t-lg">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50/50 rounded-t-lg">
                                 <tr>
                                     <th class="px-4 py-3">NIM</th>
                                     <th class="px-4 py-3">Nama Lengkap</th>
@@ -218,7 +300,7 @@
                                 </tr>
                             </thead>
                             <tbody id="table-mahasiswa" class="border-b">
-                                <tr><td colspan="5" class="px-4 py-4 text-center text-xs">Memuat data...</td></tr>
+                                <tr><td colspan="5" class="px-4 py-4 text-center text-xs font-medium">Memuat data...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -229,44 +311,44 @@
             <div id="dosen-tab-materi" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Form Tambah Materi -->
                 <div class="glass-card p-6 lg:col-span-1 h-fit">
-                    <h3 class="text-lg font-semibold mb-4 border-b pb-2">Materi / Bahan Bacaan</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2"><i data-lucide="book-plus" class="w-5 h-5 text-pastel-primary"></i> Materi / Bahan Bacaan</h3>
                     <form id="form-add-materi" onsubmit="handleAddMateri(event)" class="space-y-4">
                         <div class="flex gap-2">
                             <div class="w-1/3">
-                                <label class="block text-xs font-medium text-gray-500 mb-1">Pertemuan</label>
+                                <label class="block text-xs font-semibold text-gray-500 mb-1">Pertemuan</label>
                                 <input type="number" id="mat-ptm" required class="w-full input-pastel rounded-md p-2 text-sm" placeholder="Ke-">
                             </div>
                             <div class="w-2/3">
-                                <label class="block text-xs font-medium text-gray-500 mb-1">Fase / Kategori</label>
+                                <label class="block text-xs font-semibold text-gray-500 mb-1">Fase / Kategori</label>
                                 <input type="text" id="mat-fase" required class="w-full input-pastel rounded-md p-2 text-sm" placeholder="Contoh: Fase 1">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Judul Materi</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Judul Materi</label>
                             <input type="text" id="mat-judul" required class="w-full input-pastel rounded-md p-2 text-sm" placeholder="Judul materi...">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">URL Gambar Cover (Opsional)</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">URL Gambar Cover (Opsional)</label>
                             <input type="url" id="mat-image" class="w-full input-pastel rounded-md p-2 text-sm" placeholder="https://contoh.com/gambar.jpg">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Konten Materi</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Konten Materi</label>
                             <div id="editor-container" class="bg-white" style="height: 180px;"></div>
                         </div>
                         <input type="hidden" id="mat-id" value="">
                         <div class="flex gap-2 pt-2">
-                            <button type="submit" id="btn-submit-materi" class="flex-1 btn-pastel font-medium rounded-md p-2 text-sm">Simpan Materi</button>
-                            <button type="button" id="btn-cancel-materi" onclick="cancelEditMateri()" class="hidden flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors font-medium rounded-md p-2 text-sm">Batal</button>
+                            <button type="submit" id="btn-submit-materi" class="flex-1 btn-pastel font-bold rounded-md p-2 text-sm flex justify-center items-center gap-1.5"><i data-lucide="save" class="w-4 h-4"></i> Simpan Materi</button>
+                            <button type="button" id="btn-cancel-materi" onclick="cancelEditMateri()" class="hidden flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors font-bold rounded-md p-2 text-sm flex justify-center items-center gap-1.5"><i data-lucide="x" class="w-4 h-4"></i> Batal</button>
                         </div>
                     </form>
                 </div>
 
                 <!-- Daftar Materi -->
                 <div class="glass-card p-6 lg:col-span-2">
-                    <h3 class="text-lg font-semibold mb-4 border-b pb-2">Daftar Materi (RPS)</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Daftar Materi (RPS)</h3>
                     <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
                         <table class="w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-10">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50/50 sticky top-0 z-10">
                                 <tr>
                                     <th class="px-4 py-3">Ptm</th>
                                     <th class="px-4 py-3">Judul Materi & Preview Konten</th>
@@ -283,34 +365,34 @@
             <div id="dosen-tab-soal" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Form Tambah Soal -->
                 <div class="glass-card p-6 lg:col-span-1 h-fit">
-                    <h3 class="text-lg font-semibold mb-4 border-b pb-2">Buat Soal / Tagihan Tugas</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2"><i data-lucide="file-plus" class="w-5 h-5 text-pastel-primary"></i> Buat Soal / Tagihan Tugas</h3>
                     <form id="form-add-soal" onsubmit="handleAddSoal(event)" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Untuk Pertemuan Ke-</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Untuk Pertemuan Ke-</label>
                             <input type="number" id="soal-ptm" required class="w-full input-pastel rounded-md p-2 text-sm" placeholder="Contoh: 1">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Judul Tugas</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Judul Tugas</label>
                             <input type="text" id="soal-judul" required class="w-full input-pastel rounded-md p-2 text-sm" placeholder="Contoh: Identifikasi Masalah">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Deskripsi / Instruksi Soal</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Deskripsi / Instruksi Soal</label>
                             <textarea id="soal-deskripsi" required rows="4" class="w-full input-pastel rounded-md p-2 text-sm" placeholder="Tulis instruksi pengerjaan tugas di sini..."></textarea>
                         </div>
                         <input type="hidden" id="soal-id" value="">
                         <div class="flex gap-2">
-                            <button type="submit" id="btn-submit-soal" class="flex-1 btn-pastel font-medium rounded-md p-2 text-sm">Simpan Soal</button>
-                            <button type="button" id="btn-cancel-soal" onclick="cancelEditSoal()" class="hidden flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors font-medium rounded-md p-2 text-sm">Batal</button>
+                            <button type="submit" id="btn-submit-soal" class="flex-1 btn-pastel font-bold rounded-md p-2 text-sm flex justify-center items-center gap-1.5"><i data-lucide="save" class="w-4 h-4"></i> Simpan Soal</button>
+                            <button type="button" id="btn-cancel-soal" onclick="cancelEditSoal()" class="hidden flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors font-bold rounded-md p-2 text-sm flex justify-center items-center gap-1.5"><i data-lucide="x" class="w-4 h-4"></i> Batal</button>
                         </div>
                     </form>
                 </div>
 
                 <!-- Daftar Soal -->
                 <div class="glass-card p-6 lg:col-span-2">
-                    <h3 class="text-lg font-semibold mb-4 border-b pb-2">Daftar Soal / Tugas yang Diberikan</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Daftar Soal / Tugas yang Diberikan</h3>
                     <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
                         <table class="w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50/50 sticky top-0">
                                 <tr>
                                     <th class="px-4 py-3 text-center">Ptm</th>
                                     <th class="px-4 py-3">Judul & Instruksi</th>
@@ -327,28 +409,28 @@
             <div id="dosen-tab-nilai" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Form Tambah Nilai -->
                 <div class="glass-card p-6 md:col-span-1 h-fit">
-                    <h3 class="text-lg font-semibold mb-4 border-b pb-2">Input/Edit Nilai Manual</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2"><i data-lucide="star" class="w-5 h-5 text-pastel-primary"></i> Input/Edit Nilai Manual</h3>
                     <form id="form-add-nilai" onsubmit="handleAddNilai(event)" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Mahasiswa</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Mahasiswa</label>
                             <select id="nilai-nim" required class="w-full input-pastel rounded-md p-2 text-sm"></select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Pertemuan Ke-</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Pertemuan Ke-</label>
                             <input type="number" id="nilai-ptm" required class="w-full input-pastel rounded-md p-2 text-sm" min="1" max="16">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Skor / Nilai</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Skor / Nilai</label>
                             <input type="number" id="nilai-skor" required class="w-full input-pastel rounded-md p-2 text-sm" placeholder="0 - 100" min="0" max="100">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Catatan (Opsional)</label>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Catatan (Opsional)</label>
                             <textarea id="nilai-catatan" rows="2" class="w-full input-pastel rounded-md p-2 text-sm"></textarea>
                         </div>
                         <input type="hidden" id="nilai-id" value="">
                         <div class="flex gap-2">
-                            <button type="submit" id="btn-submit-nilai" class="flex-1 btn-pastel font-medium rounded-md p-2 text-sm">Simpan Nilai</button>
-                            <button type="button" id="btn-cancel-nilai" onclick="cancelEditNilai()" class="hidden flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors font-medium rounded-md p-2 text-sm">Batal</button>
+                            <button type="submit" id="btn-submit-nilai" class="flex-1 btn-pastel font-bold rounded-md p-2 text-sm flex justify-center items-center gap-1.5"><i data-lucide="save" class="w-4 h-4"></i> Simpan Nilai</button>
+                            <button type="button" id="btn-cancel-nilai" onclick="cancelEditNilai()" class="hidden flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors font-bold rounded-md p-2 text-sm flex justify-center items-center gap-1.5"><i data-lucide="x" class="w-4 h-4"></i> Batal</button>
                         </div>
                     </form>
                 </div>
@@ -356,12 +438,12 @@
                 <!-- Daftar Nilai -->
                 <div class="glass-card p-6 md:col-span-2">
                     <div class="flex justify-between items-center mb-4 border-b pb-2">
-                        <h3 class="text-lg font-semibold">Daftar Nilai Mahasiswa</h3>
-                        <button onclick="fetchNilai(); renderDosenNilai();" class="text-xs text-pastel-primary hover:underline">Segarkan Data</button>
+                        <h3 class="text-lg font-bold text-gray-800">Daftar Nilai Mahasiswa</h3>
+                        <button onclick="fetchNilai(); renderDosenNilai();" class="text-xs text-pastel-primary font-bold hover:underline flex items-center gap-1"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh</button>
                     </div>
                     <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
                         <table class="w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50/50 sticky top-0">
                                 <tr>
                                     <th class="px-4 py-3">Mhs / NIM</th>
                                     <th class="px-4 py-3">Ptm</th>
@@ -379,12 +461,12 @@
             <!-- TAB 4: Assessment AI -->
             <div id="dosen-tab-tugas" class="hidden glass-card p-6">
                 <div class="flex justify-between items-center mb-4 border-b pb-2">
-                    <h3 class="text-lg font-semibold text-pastel-primary">Tugas Masuk & Penilaian AI</h3>
-                    <button onclick="fetchTugas(); renderDosenTugas();" class="text-xs text-pastel-primary hover:underline">Segarkan Data</button>
+                    <h3 class="text-lg font-extrabold text-gradient flex items-center gap-2"><i data-lucide="bot" class="w-5 h-5 text-indigo-500"></i> Tugas Masuk & Penilaian AI</h3>
+                    <button onclick="fetchTugas(); renderDosenTugas();" class="text-xs text-pastel-primary font-bold hover:underline flex items-center gap-1"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh</button>
                 </div>
-                <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
+                <div class="overflow-x-auto max-h-[500px] overflow-y-auto mt-4">
                     <table class="w-full text-sm text-left text-gray-500">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50/50 sticky top-0">
                             <tr>
                                 <th class="px-4 py-3">Mhs / NIM</th>
                                 <th class="px-4 py-3 text-center">Ptm</th>
@@ -401,13 +483,13 @@
 
         <!-- 3. MAHASISWA DASHBOARD VIEW -->
         <div id="view-mhs" class="hidden space-y-6">
-            <div class="bg-pastel-primary/10 border border-pastel-primary/20 rounded-xl p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="bg-white/80 backdrop-blur-md border border-pastel-primary/30 rounded-xl p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm">
                 <div>
-                    <h2 class="text-2xl font-bold text-pastel-text mb-1">Portal Mahasiswa</h2>
-                    <p class="text-sm text-gray-600">S1 Transportasi - 16 Pertemuan Menuju Proposal Skripsi</p>
+                    <h2 class="text-3xl font-extrabold text-gradient mb-1">Portal Mahasiswa</h2>
+                    <p class="text-sm font-medium text-gray-600">S1 Transportasi</p>
                 </div>
-                <button onclick="refreshMhsData(event)" class="bg-white px-4 py-2 rounded-lg shadow-sm text-sm border border-gray-100 hover:bg-gray-50 transition text-pastel-primary font-medium flex items-center gap-2">
-                    🔄 Segarkan Data
+                <button onclick="refreshMhsData(event)" class="bg-white px-4 py-2.5 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition text-pastel-primary font-bold flex items-center gap-2">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh
                 </button>
             </div>
 
@@ -415,11 +497,83 @@
             <div id="materi-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
 
+        <!-- MODAL VIEW JAWABAN (DOSEN) -->
+        <div id="modal-view-jawaban" class="fixed inset-0 z-[100] hidden items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden transform transition-all">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-pastel-bg">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-5 h-5 text-pastel-primary"></i> Detail Jawaban Mahasiswa
+                    </h3>
+                    <button onclick="closeAnswerModal()" class="text-gray-400 hover:text-red-500 transition-colors bg-white rounded-full p-1 shadow-sm border border-gray-100">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div class="p-6 overflow-y-auto flex-grow bg-white">
+                    <div class="mb-5 bg-blue-50/50 p-4 rounded-lg border border-blue-100">
+                        <p class="text-[10px] font-bold text-blue-500 uppercase tracking-wider mb-1 flex items-center gap-1"><i data-lucide="user" class="w-3 h-3"></i> Informasi Mahasiswa</p>
+                        <p id="modal-info-mhs" class="text-sm font-bold text-gray-800"></p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1"><i data-lucide="message-square" class="w-3 h-3"></i> Isi Jawaban / Tautan</p>
+                        <div id="modal-content-jawaban" class="text-sm text-gray-700 bg-gray-50 p-5 rounded-lg border border-gray-200 whitespace-pre-wrap leading-relaxed font-medium min-h-[100px]"></div>
+                    </div>
+                </div>
+                <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+                    <button onclick="closeAnswerModal()" class="btn-pastel px-5 py-2 rounded-md text-sm font-bold shadow-sm flex items-center gap-2">
+                        <i data-lucide="check" class="w-4 h-4"></i> Selesai Membaca
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL NILAI MANUAL (DOSEN) -->
+        <div id="modal-nilai-manual" class="fixed inset-0 z-[100] hidden items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full flex flex-col overflow-hidden transform transition-all">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-pastel-bg">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <i data-lucide="edit-3" class="w-5 h-5 text-pastel-primary"></i> Beri Nilai Manual
+                    </h3>
+                    <button onclick="closeManualNilaiModal()" class="text-gray-400 hover:text-red-500 transition-colors bg-white rounded-full p-1 shadow-sm border border-gray-100">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div class="p-6 bg-white">
+                    <form id="form-nilai-manual" onsubmit="submitManualNilai(event)" class="space-y-4">
+                        <input type="hidden" id="manual-tugas-id">
+                        <input type="hidden" id="manual-nim">
+                        <input type="hidden" id="manual-ptm">
+                        
+                        <div class="mb-2 bg-blue-50/50 p-3 rounded-lg border border-blue-100 text-sm">
+                            <span class="font-bold text-gray-700" id="manual-info-label"></span>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Skor / Nilai (0-100)</label>
+                            <input type="number" id="manual-skor" required min="0" max="100" class="w-full input-pastel rounded-md p-2.5 text-sm" placeholder="Contoh: 85">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Umpan Balik / Catatan Dosen</label>
+                            <textarea id="manual-catatan" required rows="4" class="w-full input-pastel rounded-md p-2.5 text-sm" placeholder="Tuliskan evaluasi Anda di sini..."></textarea>
+                        </div>
+                        
+                        <div class="pt-2 flex justify-end gap-2">
+                            <button type="button" onclick="closeManualNilaiModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-sm font-bold hover:bg-gray-300 transition-colors">Batal</button>
+                            <button type="submit" id="btn-submit-manual" class="btn-pastel px-5 py-2 rounded-md text-sm font-bold shadow-sm flex items-center gap-1.5">
+                                <i data-lucide="save" class="w-4 h-4"></i> Simpan Penilaian
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </main>
 
-    <footer class="bg-white border-t border-pastel-border mt-auto py-6">
+    <footer class="bg-white/80 backdrop-blur-md border-t border-pastel-border mt-auto py-6">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-xs text-gray-400">© 2026 LMS Metodologi Penelitian Teknik Transportasi.</p>
+            <p class="text-xs font-semibold text-gray-400 tracking-wide flex items-center justify-center gap-1">
+                <i data-lucide="copyright" class="w-3 h-3"></i> 2026 LMS Metodologi Penelitian Teknik Transportasi.
+            </p>
         </div>
     </footer>
 
@@ -442,6 +596,18 @@
         let tugasData = []; 
         let currentUserNim = ''; 
         let quillEditor;  
+
+        // --- FUNGSI BARU: Pembersih Karakter HTML (Mencegah kerusakan tombol) ---
+        function escapeHTML(str) {
+            if (!str) return "";
+            return str.replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[tag]));
+        }
 
         // --- FUNGSI BARU: Kompresor Gambar Otomatis ---
         function imageHandler() {
@@ -488,6 +654,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons(); // Render ikon pertama kali
             quillEditor = new Quill('#editor-container', {
                 theme: 'snow',
                 placeholder: 'Tulis materi dan sisipkan gambar di sini...',
@@ -518,7 +685,6 @@
         }
 
         async function fetchNilai() {
-            // Kita urutkan berdasarkan created_at descending agar mahasiswa selalu mendapatkan nilai versi terbaru jika ada update
             const { data, error } = await supabaseClient.from('nilai').select('*').order('created_at', { ascending: false });
             if (!error && data) nilaiData = data;
         }
@@ -572,7 +738,8 @@
             const user = document.getElementById('login-username').value;
             const pass = document.getElementById('login-password').value;
 
-            btn.innerHTML = 'Memproses...';
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Memproses...';
+            lucide.createIcons();
             btn.disabled = true;
 
             try {
@@ -612,7 +779,8 @@
             } catch (err) {
                 showError("Terjadi kesalahan koneksi database.");
             } finally {
-                btn.innerHTML = 'Masuk';
+                btn.innerHTML = '<i data-lucide="log-in" class="w-4 h-4"></i> Masuk';
+                lucide.createIcons();
                 btn.disabled = false;
             }
         }
@@ -638,11 +806,11 @@
                 return;
             }
 
-            btn.innerHTML = 'Memproses...';
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Memproses...';
+            lucide.createIcons();
             btn.disabled = true;
 
             try {
-                // Cek apakah NIM atau Email sudah ada
                 const { data: existing } = await supabaseClient
                     .from('mahasiswa')
                     .select('id')
@@ -651,6 +819,9 @@
                 if (existing && existing.length > 0) {
                     errDiv.innerText = "NIM atau Email sudah terdaftar!";
                     errDiv.classList.remove('hidden');
+                    btn.innerHTML = '<i data-lucide="user-plus" class="w-4 h-4"></i> Daftar Sekarang';
+                    lucide.createIcons();
+                    btn.disabled = false;
                     return;
                 }
 
@@ -664,13 +835,14 @@
                     sucDiv.innerText = "Registrasi berhasil! Silakan masuk.";
                     sucDiv.classList.remove('hidden');
                     document.getElementById('register-form').reset();
-                    setTimeout(() => switchView('view-login'), 2000); // Otomatis kembali ke halaman login setelah 2 detik
+                    setTimeout(() => switchView('view-login'), 2000); 
                 }
             } catch (err) {
                 errDiv.innerText = "Terjadi kesalahan koneksi sistem.";
                 errDiv.classList.remove('hidden');
             } finally {
-                btn.innerHTML = 'Daftar Sekarang';
+                btn.innerHTML = '<i data-lucide="user-plus" class="w-4 h-4"></i> Daftar Sekarang';
+                lucide.createIcons();
                 btn.disabled = false;
             }
         }
@@ -683,11 +855,11 @@
             
             tabs.forEach(t => {
                 document.getElementById(`dosen-tab-${t}`).classList.add('hidden');
-                document.getElementById(`btn-tab-${t}`).className = "py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap";
+                document.getElementById(`btn-tab-${t}`).className = "py-2 px-6 text-sm font-semibold text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap flex items-center gap-1.5";
             });
 
             document.getElementById(`dosen-tab-${tab}`).classList.remove('hidden');
-            document.getElementById(`btn-tab-${tab}`).className = "py-2 px-6 text-sm font-semibold border-b-2 border-pastel-primary text-pastel-primary transition-colors whitespace-nowrap";
+            document.getElementById(`btn-tab-${tab}`).className = "py-2 px-6 text-sm font-extrabold border-b-2 border-pastel-primary text-pastel-primary transition-colors whitespace-nowrap flex items-center gap-1.5";
 
             if (tab === 'materi') renderDosenMateri();
             if (tab === 'soal') renderDosenSoal();
@@ -698,27 +870,30 @@
         function renderDosenMateri() {
             const tbody = document.getElementById('table-materi');
             if (rpsData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-xs">Belum ada materi.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-xs font-medium">Belum ada materi.</td></tr>';
                 return;
             }
             tbody.innerHTML = '';
             rpsData.forEach((item) => {
                 const tr = document.createElement('tr');
-                tr.className = "bg-white border-b hover:bg-gray-50";
+                tr.className = "bg-white border-b hover:bg-gray-50/50 transition-colors";
                 const plainText = item.konten ? item.konten.replace(/<[^>]*>?/gm, '') : '';
                 tr.innerHTML = `
-                    <td class="px-4 py-3 font-medium text-gray-900">${item.ptm}</td>
+                    <td class="px-4 py-3 font-bold text-gray-900">${item.ptm}</td>
                     <td class="px-4 py-3">
-                        <p class="font-semibold text-gray-800">${item.judul}</p>
+                        <p class="font-bold text-gray-800">${item.judul}</p>
                         <p class="text-xs text-gray-400 mt-1 line-clamp-1">${plainText}</p>
                     </td>
-                    <td class="px-4 py-3 text-center whitespace-nowrap">
-                        <button onclick="editMateriClick('${item.id}')" class="text-blue-500 hover:text-blue-700 text-xs font-medium mr-2">Edit</button>
-                        <button onclick="handleDeleteMateri('${item.id}')" class="text-red-500 hover:text-red-700 text-xs font-medium">Hapus</button>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <div class="flex items-center justify-center gap-3">
+                            <button onclick="editMateriClick('${item.id}')" class="text-blue-500 hover:text-blue-700 text-xs font-bold flex items-center gap-1"><i data-lucide="edit" class="w-3 h-3"></i> Edit</button>
+                            <button onclick="handleDeleteMateri('${item.id}')" class="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1"><i data-lucide="trash-2" class="w-3 h-3"></i> Hapus</button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+            lucide.createIcons();
         }
 
         async function handleAddMateri(e) {
@@ -734,17 +909,16 @@
 
             const payload = { ptm, fase, judul, konten, image_url };
             const btn = document.getElementById('btn-submit-materi');
-            btn.innerHTML = "Menyimpan...";
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Menyimpan...';
+            lucide.createIcons();
             btn.disabled = true;
 
             if (id) {
                 const { error } = await supabaseClient.from('materi').update(payload).eq('id', id);
                 if (error) alert("Gagal update: " + error.message);
-                else alert('Materi berhasil diperbarui!');
             } else {
                 const { error } = await supabaseClient.from('materi').insert([payload]);
                 if (error) alert("Gagal menyimpan: " + error.message);
-                else alert('Materi berhasil ditambahkan!');
             }
 
             btn.disabled = false;
@@ -767,7 +941,9 @@
             document.getElementById('mat-image').value = item.image_url || '';
             quillEditor.clipboard.dangerouslyPasteHTML(item.konten || '');
             
-            document.getElementById('btn-submit-materi').innerText = 'Update Materi';
+            const btn = document.getElementById('btn-submit-materi');
+            btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Update Materi';
+            lucide.createIcons();
             document.getElementById('btn-cancel-materi').classList.remove('hidden');
 
             document.getElementById('form-add-materi').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -777,7 +953,9 @@
             document.getElementById('form-add-materi').reset();
             document.getElementById('mat-id').value = '';
             quillEditor.setContents([]); 
-            document.getElementById('btn-submit-materi').innerText = 'Simpan Materi';
+            const btn = document.getElementById('btn-submit-materi');
+            btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Simpan Materi';
+            lucide.createIcons();
             document.getElementById('btn-cancel-materi').classList.add('hidden');
         }
 
@@ -796,26 +974,29 @@
         function renderDosenSoal() {
             const tbody = document.getElementById('table-soal');
             if (soalData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-xs">Belum ada data soal. Silakan buat soal baru.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-xs font-medium">Belum ada data soal. Silakan buat soal baru.</td></tr>';
                 return;
             }
             tbody.innerHTML = '';
             soalData.forEach((item) => {
                 const tr = document.createElement('tr');
-                tr.className = "bg-white border-b hover:bg-gray-50";
+                tr.className = "bg-white border-b hover:bg-gray-50/50 transition-colors";
                 tr.innerHTML = `
                     <td class="px-4 py-3 text-center font-bold text-pastel-primary">${item.ptm}</td>
                     <td class="px-4 py-3">
-                        <p class="font-semibold text-gray-800">${item.judul}</p>
+                        <p class="font-bold text-gray-800">${item.judul}</p>
                         <p class="text-xs text-gray-500 mt-1 whitespace-pre-wrap">${item.deskripsi}</p>
                     </td>
-                    <td class="px-4 py-3 text-center whitespace-nowrap">
-                        <button type="button" onclick="editSoalClick('${item.id}')" class="text-blue-500 hover:text-blue-700 text-xs font-medium mr-2">Edit</button>
-                        <button type="button" onclick="handleDeleteSoal('${item.id}')" class="text-red-500 hover:text-red-700 text-xs font-medium">Hapus</button>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <div class="flex items-center justify-center gap-3">
+                            <button type="button" onclick="editSoalClick('${item.id}')" class="text-blue-500 hover:text-blue-700 text-xs font-bold flex items-center gap-1"><i data-lucide="edit" class="w-3 h-3"></i> Edit</button>
+                            <button type="button" onclick="handleDeleteSoal('${item.id}')" class="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1"><i data-lucide="trash-2" class="w-3 h-3"></i> Hapus</button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+            lucide.createIcons();
         }
 
         async function handleAddSoal(e) {
@@ -827,7 +1008,8 @@
 
             const payload = { ptm, judul, deskripsi };
             const btn = document.getElementById('btn-submit-soal');
-            btn.innerHTML = "Menyimpan...";
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Menyimpan...';
+            lucide.createIcons();
             btn.disabled = true;
 
             if (id) {
@@ -855,7 +1037,9 @@
             document.getElementById('soal-judul').value = item.judul;
             document.getElementById('soal-deskripsi').value = item.deskripsi;
             
-            document.getElementById('btn-submit-soal').innerText = 'Update Soal';
+            const btn = document.getElementById('btn-submit-soal');
+            btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Update Soal';
+            lucide.createIcons();
             document.getElementById('btn-cancel-soal').classList.remove('hidden');
 
             document.getElementById('form-add-soal').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -864,7 +1048,9 @@
         function cancelEditSoal() {
             document.getElementById('form-add-soal').reset();
             document.getElementById('soal-id').value = '';
-            document.getElementById('btn-submit-soal').innerText = 'Simpan Soal';
+            const btn = document.getElementById('btn-submit-soal');
+            btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Simpan Soal';
+            lucide.createIcons();
             document.getElementById('btn-cancel-soal').classList.add('hidden');
         }
 
@@ -882,31 +1068,34 @@
 
         async function loadMahasiswa() {
             const tbody = document.getElementById('table-mahasiswa');
-            tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-xs">Memuat data...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-xs font-medium">Memuat data...</td></tr>';
             const { data, error } = await supabaseClient.from('mahasiswa').select('*').order('created_at', { ascending: false });
 
-            if (error) return tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-4 text-center text-xs text-red-500">Gagal memuat data mahasiswa.</td></tr>`;
+            if (error) return tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-4 text-center text-xs text-red-500 font-medium">Gagal memuat data mahasiswa.</td></tr>`;
             mahasiswaData = data || [];
             populateMhsDropdown();
 
-            if (data.length === 0) return tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-xs">Belum ada mahasiswa terdaftar.</td></tr>';
+            if (data.length === 0) return tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-xs font-medium">Belum ada mahasiswa terdaftar.</td></tr>';
             
             tbody.innerHTML = '';
             data.forEach(mhs => {
                 const tr = document.createElement('tr');
-                tr.className = "bg-white border-b hover:bg-gray-50";
+                tr.className = "bg-white border-b hover:bg-gray-50/50 transition-colors";
                 tr.innerHTML = `
-                    <td class="px-4 py-3 font-medium text-gray-900">${mhs.nim}</td>
-                    <td class="px-4 py-3">${mhs.nama}</td>
+                    <td class="px-4 py-3 font-bold text-gray-900">${mhs.nim}</td>
+                    <td class="px-4 py-3 font-medium">${mhs.nama}</td>
                     <td class="px-4 py-3 text-xs text-gray-500">${mhs.email || '-'}</td>
                     <td class="px-4 py-3 font-mono text-gray-400 text-xs">${mhs.password}</td>
-                    <td class="px-4 py-3 text-center whitespace-nowrap">
-                        <button type="button" onclick="editMahasiswaClick('${mhs.id}')" class="text-blue-500 hover:text-blue-700 text-xs font-medium mr-2">Edit</button>
-                        <button type="button" onclick="handleDeleteMahasiswa('${mhs.id}')" class="text-red-500 hover:text-red-700 text-xs font-medium">Hapus</button>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <div class="flex items-center justify-center gap-3">
+                            <button type="button" onclick="editMahasiswaClick('${mhs.id}')" class="text-blue-500 hover:text-blue-700 text-xs font-bold flex items-center gap-1"><i data-lucide="edit" class="w-3 h-3"></i> Edit</button>
+                            <button type="button" onclick="handleDeleteMahasiswa('${mhs.id}')" class="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1"><i data-lucide="trash-2" class="w-3 h-3"></i> Hapus</button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+            lucide.createIcons();
         }
         
         async function handleAddMahasiswa(e) {
@@ -920,7 +1109,8 @@
             };
             
             const btn = document.getElementById('btn-submit-mhs');
-            btn.innerHTML = "Menyimpan...";
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Menyimpan...';
+            lucide.createIcons();
             btn.disabled = true;
 
             if (id) {
@@ -931,11 +1121,9 @@
                 if (error) alert("Gagal menyimpan: " + error.message);
             }
             
-            btn.innerHTML = "Simpan Data";
-            btn.disabled = false;
-            
             cancelEditMahasiswa();
             loadMahasiswa();
+            btn.disabled = false;
         }
 
         function editMahasiswaClick(id) {
@@ -951,7 +1139,9 @@
             document.getElementById('add-email').value = mhs.email || '';
             document.getElementById('add-password').value = mhs.password;
             
-            document.getElementById('btn-submit-mhs').innerText = 'Update Data';
+            const btn = document.getElementById('btn-submit-mhs');
+            btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Update Data';
+            lucide.createIcons();
             document.getElementById('btn-cancel-mhs').classList.remove('hidden');
 
             document.getElementById('form-add-mhs').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -962,7 +1152,9 @@
             document.getElementById('add-mhs-id').value = '';
             document.getElementById('add-email').value = '';
             document.getElementById('add-password').value = 'mhs123';
-            document.getElementById('btn-submit-mhs').innerText = 'Simpan Data';
+            const btn = document.getElementById('btn-submit-mhs');
+            btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Simpan Data';
+            lucide.createIcons();
             document.getElementById('btn-cancel-mhs').classList.add('hidden');
         }
 
@@ -987,24 +1179,27 @@
         // --- MANAJEMEN NILAI & TUGAS AI DOSEN ---
         function renderDosenNilai() {
             const tbody = document.getElementById('table-nilai');
-            if (nilaiData.length === 0) return tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-xs">Belum ada data nilai.</td></tr>';
+            if (nilaiData.length === 0) return tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-xs font-medium">Belum ada data nilai.</td></tr>';
             tbody.innerHTML = '';
             nilaiData.forEach((item) => {
                 const tr = document.createElement('tr');
-                tr.className = "bg-white border-b hover:bg-gray-50";
+                tr.className = "bg-white border-b hover:bg-gray-50/50 transition-colors";
                 const namaMhs = mahasiswaData.find(m => String(m.nim) === String(item.nim))?.nama || 'Unknown';
                 tr.innerHTML = `
-                    <td class="px-4 py-3"><p class="font-medium text-gray-900">${namaMhs}</p><p class="text-xs text-gray-500">${item.nim}</p></td>
-                    <td class="px-4 py-3 text-center font-semibold text-pastel-primary">${item.ptm}</td>
-                    <td class="px-4 py-3 text-center"><span class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-bold">${item.skor}</span></td>
-                    <td class="px-4 py-3 text-xs text-gray-500">${item.catatan || '-'}</td>
-                    <td class="px-4 py-3 text-center whitespace-nowrap">
-                        <button onclick="editNilaiClick('${item.id}')" class="text-blue-500 hover:text-blue-700 text-xs font-medium mr-2">Edit</button>
-                        <button onclick="handleDeleteNilai('${item.id}')" class="text-red-500 hover:text-red-700 text-xs font-medium">Hapus</button>
+                    <td class="px-4 py-3"><p class="font-bold text-gray-900">${namaMhs}</p><p class="text-xs text-gray-500">${item.nim}</p></td>
+                    <td class="px-4 py-3 text-center font-bold text-pastel-primary">${item.ptm}</td>
+                    <td class="px-4 py-3 text-center"><span class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-bold shadow-sm inline-flex items-center gap-1"><i data-lucide="award" class="w-3 h-3"></i> ${item.skor}</span></td>
+                    <td class="px-4 py-3 text-xs text-gray-500 font-medium">${item.catatan || '-'}</td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <div class="flex items-center justify-center gap-3">
+                            <button onclick="editNilaiClick('${item.id}')" class="text-blue-500 hover:text-blue-700 text-xs font-bold flex items-center gap-1"><i data-lucide="edit" class="w-3 h-3"></i> Edit</button>
+                            <button onclick="handleDeleteNilai('${item.id}')" class="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1"><i data-lucide="trash-2" class="w-3 h-3"></i> Hapus</button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+            lucide.createIcons();
         }
 
         async function handleAddNilai(e) {
@@ -1016,10 +1211,17 @@
                 skor: parseFloat(document.getElementById('nilai-skor').value),
                 catatan: document.getElementById('nilai-catatan').value
             };
+            const btn = document.getElementById('btn-submit-nilai');
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Menyimpan...';
+            lucide.createIcons();
+            btn.disabled = true;
+
             if (id) await supabaseClient.from('nilai').update(payload).eq('id', id);
             else await supabaseClient.from('nilai').insert([payload]);
+            
             cancelEditNilai();
             await fetchNilai(); renderDosenNilai();
+            btn.disabled = false;
         }
 
         function editNilaiClick(id) {
@@ -1030,14 +1232,18 @@
             document.getElementById('nilai-ptm').value = item.ptm;
             document.getElementById('nilai-skor').value = item.skor;
             document.getElementById('nilai-catatan').value = item.catatan || '';
-            document.getElementById('btn-submit-nilai').innerText = 'Update Nilai';
+            const btn = document.getElementById('btn-submit-nilai');
+            btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Update Nilai';
+            lucide.createIcons();
             document.getElementById('btn-cancel-nilai').classList.remove('hidden');
         }
 
         function cancelEditNilai() {
             document.getElementById('form-add-nilai').reset();
             document.getElementById('nilai-id').value = '';
-            document.getElementById('btn-submit-nilai').innerText = 'Simpan Nilai';
+            const btn = document.getElementById('btn-submit-nilai');
+            btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Simpan Nilai';
+            lucide.createIcons();
             document.getElementById('btn-cancel-nilai').classList.add('hidden');
         }
 
@@ -1045,110 +1251,244 @@
             if(confirm('Hapus nilai ini?')) { await supabaseClient.from('nilai').delete().eq('id', id); await fetchNilai(); renderDosenNilai(); }
         }
 
+        // --- FUNGSI MODAL LIHAT JAWABAN ---
+        function openAnswerModal(tugasId) {
+            const tugas = tugasData.find(t => String(t.id) === String(tugasId));
+            if (!tugas) return;
+            
+            const mhs = mahasiswaData.find(m => String(m.nim) === String(tugas.nim));
+            const namaMhs = mhs ? mhs.nama : 'Unknown';
+            
+            document.getElementById('modal-info-mhs').innerText = `${namaMhs} (${tugas.nim}) - Tugas Pertemuan ${tugas.ptm}`;
+            
+            // Cek apakah jawaban berupa Link HTTP agar bisa diklik langsung oleh dosen
+            let jawabanContent = tugas.jawaban;
+            if (jawabanContent.startsWith('http://') || jawabanContent.startsWith('https://')) {
+                jawabanContent = `<a href="${jawabanContent}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1.5 break-all font-bold"><i data-lucide="external-link" class="w-4 h-4"></i> ${jawabanContent}</a>`;
+            }
+            
+            document.getElementById('modal-content-jawaban').innerHTML = jawabanContent;
+            
+            const modal = document.getElementById('modal-view-jawaban');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons(); // Update icon di dalam modal
+        }
+
+        function closeAnswerModal() {
+            const modal = document.getElementById('modal-view-jawaban');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // --- FUNGSI MODAL PENILAIAN MANUAL ---
+        function openManualNilaiModal(tugasId, nim, ptm) {
+            const mhs = mahasiswaData.find(m => String(m.nim) === String(nim));
+            const namaMhs = mhs ? mhs.nama : 'Unknown';
+            
+            document.getElementById('manual-tugas-id').value = tugasId;
+            document.getElementById('manual-nim').value = nim;
+            document.getElementById('manual-ptm').value = ptm;
+            
+            document.getElementById('manual-info-label').innerText = `Menilai: ${namaMhs} (Ptm ${ptm})`;
+            document.getElementById('manual-skor').value = '';
+            document.getElementById('manual-catatan').value = '';
+            
+            const modal = document.getElementById('modal-nilai-manual');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeManualNilaiModal() {
+            const modal = document.getElementById('modal-nilai-manual');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function submitManualNilai(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-manual');
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Menyimpan...';
+            lucide.createIcons();
+            btn.disabled = true;
+
+            const tugasId = document.getElementById('manual-tugas-id').value;
+            const nim = document.getElementById('manual-nim').value;
+            const ptm = parseInt(document.getElementById('manual-ptm').value);
+            const skor = parseInt(document.getElementById('manual-skor').value);
+            const catatan = document.getElementById('manual-catatan').value;
+
+            try {
+                const { error: errNilai } = await supabaseClient.from('nilai').insert([{ nim, ptm, skor, catatan }]);
+                if (errNilai) throw new Error("Gagal menyimpan nilai: " + errNilai.message);
+
+                const { error: errTugas } = await supabaseClient.from('tugas').update({ status: 'Dinilai' }).eq('id', tugasId);
+                if (errTugas) throw new Error("Gagal mengupdate status tugas: " + errTugas.message);
+
+                closeManualNilaiModal();
+                await fetchNilai(); 
+                await fetchTugas();
+                renderDosenTugas(); 
+                renderDosenNilai();
+                
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Simpan Penilaian';
+                lucide.createIcons();
+                btn.disabled = false;
+            }
+        }
+
+
         function renderDosenTugas() {
             const tbody = document.getElementById('table-tugas-dosen');
-            if (tugasData.length === 0) return tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-xs">Belum ada tugas terkumpul.</td></tr>';
+            if (tugasData.length === 0) return tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-xs font-medium">Belum ada tugas terkumpul.</td></tr>';
             tbody.innerHTML = '';
             tugasData.forEach((item) => {
                 const tr = document.createElement('tr');
-                tr.className = "bg-white border-b hover:bg-gray-50";
+                tr.className = "bg-white border-b hover:bg-gray-50/50 transition-colors";
                 const namaMhs = mahasiswaData.find(m => String(m.nim) === String(item.nim))?.nama || 'Unknown';
-                const actionBtn = item.status === 'Menunggu' 
-                    ? `<button id="btn-ai-${item.id}" onclick="autoAssessTugas('${item.id}', '${item.nim}', ${item.ptm})" class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 px-3 py-1.5 rounded-md text-xs font-bold transition-all flex mx-auto">✨ Nilai (AI)</button>`
-                    : `<span class="text-xs text-green-600 font-semibold">Tuntas ✅</span>`;
+                
+                let actionBtnHtml = '';
+                if (item.status === 'Menunggu') {
+                    actionBtnHtml = `
+                        <div class="flex flex-col gap-1.5 items-center">
+                            <button id="btn-ai-${item.id}" onclick="autoAssessTugas('${item.id}', '${item.nim}', ${item.ptm})" class="btn-ai px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center justify-center gap-1 w-24"><i data-lucide="sparkles" class="w-3 h-3"></i> Nilai AI</button>
+                            <button onclick="openManualNilaiModal('${item.id}', '${item.nim}', ${item.ptm})" class="bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300 px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center justify-center gap-1 w-24"><i data-lucide="edit-3" class="w-3 h-3"></i> Manual</button>
+                        </div>
+                    `;
+                } else {
+                    actionBtnHtml = `<span class="text-xs text-green-600 font-bold flex items-center justify-center gap-1 px-2"><i data-lucide="check-circle" class="w-4 h-4"></i> Tuntas</span>`;
+                }
+
                 const statusBadge = item.status === 'Menunggu'
-                    ? `<span class="bg-orange-100 text-orange-600 px-2 py-1 rounded text-[10px] font-bold">Menunggu</span>`
-                    : `<span class="bg-green-100 text-green-600 px-2 py-1 rounded text-[10px] font-bold">Dinilai</span>`;
+                    ? `<span class="bg-orange-100 text-orange-600 px-2 py-1 rounded text-[10px] font-bold shadow-sm inline-flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> Menunggu</span>`
+                    : `<span class="bg-green-100 text-green-600 px-2 py-1 rounded text-[10px] font-bold shadow-sm inline-flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i> Dinilai</span>`;
+                
+                // Gunakan escapeHTML agar tanda kutip pada jawaban tidak merusak elemen HTML
+                const safeJawaban = escapeHTML(item.jawaban);
+                
                 tr.innerHTML = `
-                    <td class="px-4 py-3"><p class="font-medium text-gray-900">${namaMhs}</p><p class="text-xs text-gray-500">${item.nim}</p></td>
-                    <td class="px-4 py-3 text-center font-semibold text-pastel-primary">${item.ptm}</td>
-                    <td class="px-4 py-3 text-xs text-gray-600 max-w-xs truncate" title="${item.jawaban}">${item.jawaban}</td>
+                    <td class="px-4 py-3"><p class="font-bold text-gray-900">${namaMhs}</p><p class="text-xs text-gray-500">${item.nim}</p></td>
+                    <td class="px-4 py-3 text-center font-bold text-pastel-primary">${item.ptm}</td>
+                    <td class="px-4 py-3 text-xs text-gray-600 max-w-xs truncate font-medium" title="${safeJawaban}">${safeJawaban}</td>
                     <td class="px-4 py-3 text-center">${statusBadge}</td>
-                    <td class="px-4 py-3 text-center">${actionBtn}</td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <div class="flex items-center justify-center gap-3">
+                            <button onclick="openAnswerModal('${item.id}')" class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-md text-xs font-bold transition-colors flex flex-col items-center justify-center gap-1 shadow-sm border border-blue-100 h-10 w-12"><i data-lucide="eye" class="w-4 h-4"></i> <span class="text-[9px]">Lihat</span></button>
+                            ${actionBtnHtml}
+                        </div>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
+            lucide.createIcons();
         }
 
         async function autoAssessTugas(tugasId, nim, ptm) {
             const btn = document.getElementById('btn-ai-' + tugasId);
-            btn.innerHTML = 'Membaca Jawaban...'; 
+            btn.innerHTML = '<i data-lucide="loader" class="w-3 h-3 animate-spin"></i> Dosen AI Berpikir...'; 
+            lucide.createIcons();
             btn.disabled = true;
-            
-            await new Promise(resolve => setTimeout(resolve, 1500));
 
             const tugas = tugasData.find(t => String(t.id) === String(tugasId));
-            const jawaban = tugas && tugas.jawaban ? tugas.jawaban.toLowerCase() : "";
+            const jawaban = tugas && tugas.jawaban ? tugas.jawaban : "";
             
-            const kataArr = jawaban.replace(/[^\w\s]/gi, '').split(/\s+/).filter(w => w.length > 0);
-            const wordCount = kataArr.length;
-
-            let baseSkor = 75;
-            let feedbackPanjang = "";
-            let feedbackKonten = "";
-            let bonusSkor = 0;
-
-            if (wordCount < 10) {
-                baseSkor = Math.floor(Math.random() * (75 - 65 + 1)) + 65; 
-                feedbackPanjang = "Jawaban terlalu singkat. ";
-            } else if (wordCount < 30) {
-                baseSkor = Math.floor(Math.random() * (85 - 75 + 1)) + 75; 
-                feedbackPanjang = "Jawaban cukup baik namun butuh dielaborasi. ";
-            } else {
-                baseSkor = Math.floor(Math.random() * (95 - 85 + 1)) + 85; 
-                feedbackPanjang = "Penjelasan komprehensif dan mendetail. ";
-            }
-
-            if (jawaban.includes("transportasi") || jawaban.includes("jalan") || jawaban.includes("pelabuhan") || jawaban.includes("bandara") || jawaban.includes("kendaraan")) {
-                feedbackKonten += "Konteks masalah transportasinya sudah ditekankan dengan baik. ";
-                bonusSkor += 2;
-            }
-            if (jawaban.includes("menurut") || jawaban.includes("jurnal") || jawaban.includes("penelitian") || jawaban.includes("referensi")) {
-                feedbackKonten += "Dukungan literatur/referensi terlihat ada. ";
-                bonusSkor += 3;
-            }
-            if (jawaban.includes("kualitatif") || jawaban.includes("kuantitatif") || jawaban.includes("metode") || jawaban.includes("variabel") || jawaban.includes("data")) {
-                feedbackKonten += "Penggunaan istilah metodologi sudah tepat. ";
-                bonusSkor += 2;
-            }
-            if (jawaban.includes("?")) {
-                feedbackKonten += "Fokus pertanyaan/rumusan masalah sudah teridentifikasi. ";
-                bonusSkor += 1;
-            }
-
-            if (feedbackKonten === "" && wordCount >= 10) {
-                const fallbackPool = ["Alur pemikiran cukup logis.", "Gagasan pokok tersampaikan dengan baik.", "Struktur kalimat mudah dipahami."];
-                feedbackKonten = fallbackPool[Math.floor(Math.random() * fallbackPool.length)];
-            }
-
-            let skor = baseSkor + bonusSkor;
-            if (skor > 98) skor = 98; 
-            if (wordCount === 0) skor = 0; 
-
-            // Hapus prefix robot AI di sini
-            const catatan = `${feedbackPanjang}${feedbackKonten}`;
-
-            // PENTING: Tambahkan penangkap error saat memasukkan nilai.
-            // Jika tabel nilai belum siap, sistem akan gagal menyimpan nilai, maka jangan ubah status menjadi Dinilai
-            const { error: errNilai } = await supabaseClient.from('nilai').insert([{ nim, ptm, skor, catatan }]);
-            
-            if (errNilai) {
-                alert("Gagal menyimpan nilai AI (Mohon pastikan tabel 'nilai' sudah dibuat & diatur izinnya di Supabase)! Error detail: " + errNilai.message);
-                btn.innerHTML = '✨ Nilai (AI)';
+            if (!jawaban || jawaban.trim().length < 10) {
+                alert("Jawaban mahasiswa terlalu pendek atau kosong untuk dievaluasi mendalam oleh AI.");
+                btn.innerHTML = '<i data-lucide="sparkles" class="w-3 h-3"></i> Nilai AI';
+                lucide.createIcons();
                 btn.disabled = false;
-                return; // Berhenti di sini, jangan ubah status jadi Dinilai.
+                return;
             }
 
-            const { error: errTugas } = await supabaseClient.from('tugas').update({ status: 'Dinilai' }).eq('id', tugasId);
-            
-            if (errTugas) {
-                alert("Gagal mengupdate status tugas: " + errTugas.message);
-            }
+            try {
+                const apiKey = ""; 
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
-            await fetchNilai(); 
-            await fetchTugas();
-            renderDosenTugas(); 
-            renderDosenNilai();
+                const systemPrompt = "Anda adalah seorang Dosen Pembimbing S1 program studi Teknik Transportasi yang ahli, kritis, namun suportif. Tugas Anda adalah membaca dan mengevaluasi permasalahan/jawaban yang ditulis oleh mahasiswa. Bertindaklah seperti dosen pembimbing sungguhan: berikan ulasan yang natural, pahami esensi masalahnya, kaitkan dengan ilmu transportasi (misal: manajemen lalu lintas, keselamatan, parkir, perkerasan jalan, dsb). Kemudian, berikan saran spesifik mengenai 1 atau 2 rumusan masalah / topik skripsi yang potensial diangkat dari cerita mahasiswa tersebut. Jangan gunakan kalimat klise AI. Gunakan sapaan 'Anda'. Format balasan WAJIB berupa JSON dengan kunci 'skor' (angka 60-98 tergantung kualitas dan kedalaman jawaban) dan 'catatan' (string berisi 2-3 paragraf ulasan).";
+
+                const promptText = `Silakan evaluasi jawaban mahasiswa berikut ini:\n\n"${jawaban}"`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: promptText }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: { 
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                skor: { type: "INTEGER" },
+                                catatan: { type: "STRING" }
+                            },
+                            required: ["skor", "catatan"]
+                        }
+                    }
+                };
+
+                let retries = 5;
+                let delays = [1000, 2000, 4000, 8000, 16000];
+                let attempt = 0;
+                let resultData = null;
+
+                while (attempt < retries && !resultData) {
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP Error ${response.status}`);
+                        }
+                        
+                        const result = await response.json();
+                        
+                        if (!result.candidates || result.candidates.length === 0) {
+                            throw new Error("Respons kosong dari sistem AI.");
+                        }
+
+                        const text = result.candidates[0].content?.parts?.[0]?.text;
+                        if (!text) throw new Error("AI tidak mengembalikan teks format json.");
+
+                        // Pembersihan agresif jika AI tetap memberikan balutan markdown
+                        const cleanText = text.replace(/```json/gi, '').replace(/```/gi, '').trim();
+                        resultData = JSON.parse(cleanText);
+                    } catch (error) {
+                        if (attempt === retries - 1) throw error;
+                        await new Promise(resolve => setTimeout(resolve, delays[attempt]));
+                        attempt++;
+                    }
+                }
+
+                if (!resultData || typeof resultData.skor === 'undefined' || !resultData.catatan) {
+                    throw new Error("AI gagal memformat hasil evaluasinya dengan benar.");
+                }
+
+                const skor = parseInt(resultData.skor) || 85;
+                const catatan = resultData.catatan;
+
+                const { error: errNilai } = await supabaseClient.from('nilai').insert([{ nim, ptm, skor, catatan }]);
+                if (errNilai) {
+                    throw new Error("Gagal menyimpan nilai ke database Supabase: " + errNilai.message);
+                }
+
+                await supabaseClient.from('tugas').update({ status: 'Dinilai' }).eq('id', tugasId);
+
+                await fetchNilai(); 
+                await fetchTugas();
+                renderDosenTugas(); 
+                renderDosenNilai();
+
+            } catch (err) {
+                alert("Sistem AI Dosen mengalami kendala:\n" + err.message);
+                btn.innerHTML = '<i data-lucide="sparkles" class="w-3 h-3"></i> Nilai AI';
+                lucide.createIcons();
+                btn.disabled = false;
+            }
         }
 
         // ==========================================
@@ -1158,13 +1498,15 @@
         async function refreshMhsData(event) {
             if (event && event.currentTarget) {
                 const btn = event.currentTarget;
-                btn.innerHTML = '⏳ Memuat...';
+                btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Memuat...';
+                lucide.createIcons();
                 await fetchMateri();
                 await fetchSoal();
                 await fetchNilai();
                 await fetchTugas();
                 renderMateri();
-                btn.innerHTML = '🔄 Segarkan Data';
+                btn.innerHTML = '<i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh';
+                lucide.createIcons();
             }
         }
 
@@ -1178,14 +1520,16 @@
             }
 
             const btn = document.getElementById(`btn-submit-${ptm}`);
-            btn.innerHTML = "Mengirim...";
+            btn.innerHTML = '<i data-lucide="loader" class="w-3 h-3 animate-spin"></i> Mengirim...';
+            lucide.createIcons();
             btn.disabled = true;
 
             const { error } = await supabaseClient.from('tugas').insert([{ nim: currentUserNim, ptm, jawaban }]);
 
             if (error) {
                 alert("Gagal mengirim tugas: " + error.message);
-                btn.innerHTML = "Kirim Jawaban";
+                btn.innerHTML = '<i data-lucide="send" class="w-3 h-3"></i> Kirim Jawaban';
+                lucide.createIcons();
                 btn.disabled = false;
             } else {
                 alert("Tugas berhasil terkirim!");
@@ -1212,7 +1556,6 @@
 
                 const coverImgHtml = item.image_url ? `<img src="${item.image_url}" alt="Cover Materi" class="w-full h-40 object-cover border-b border-gray-100">` : '';
                 
-                // --- LOGIKA PENCARIAN NILAI (Sudah diperketat konversi tipenya) ---
                 const soal = soalData.find(s => String(s.ptm) === String(item.ptm));
                 const myTugas = tugasData.find(t => String(t.nim) === String(currentUserNim) && String(t.ptm) === String(item.ptm));
                 const myNilai = nilaiData.find(n => String(n.nim) === String(currentUserNim) && String(n.ptm) === String(item.ptm));
@@ -1220,30 +1563,30 @@
                 let tugasHtml = '';
                 if (soal) {
                     if (myTugas) {
-                        const statusBadge = myTugas.status === 'Menunggu' ? `<span class="bg-orange-100 text-orange-600 px-2 py-1 rounded text-[10px] font-bold">Menunggu Review</span>` : `<span class="bg-green-100 text-green-600 px-2 py-1 rounded text-[10px] font-bold">Dinilai ✅</span>`;
-                        const nilaiBadge = myNilai ? `<span class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-bold">${myNilai.skor}</span>` : `<span class="text-gray-400 text-xs">-</span>`;
+                        const statusBadge = myTugas.status === 'Menunggu' ? `<span class="bg-orange-100 text-orange-600 px-2 py-1 rounded text-[10px] font-bold shadow-sm inline-flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> Menunggu Review</span>` : `<span class="bg-green-100 text-green-600 px-2 py-1 rounded text-[10px] font-bold shadow-sm inline-flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i> Dinilai</span>`;
+                        const nilaiBadge = myNilai ? `<span class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-bold shadow-sm inline-flex items-center gap-1"><i data-lucide="award" class="w-3 h-3"></i> ${myNilai.skor}</span>` : `<span class="text-gray-400 text-xs font-medium">-</span>`;
                         
-                        // Bersihkan tulisan bot AI dari data yang mungkin sudah telanjur tersimpan
                         let cleanCatatan = myNilai && myNilai.catatan ? myNilai.catatan.replace('🤖 [AI Review]: ', '') : '';
-                        
+                        const safeJawabanStudent = escapeHTML(myTugas.jawaban);
+
                         const catatan = myNilai && myNilai.catatan ? `
-                            <div class="mt-3 bg-blue-50/50 border border-blue-100 rounded-md p-3">
+                            <div class="mt-3 bg-blue-50/50 border border-blue-100 rounded-md p-3 shadow-sm">
                                 <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-1 flex items-center gap-1">
-                                    💬 Umpan Balik:
+                                    <i data-lucide="message-square" class="w-3 h-3"></i> Umpan Balik:
                                 </span>
-                                <p class="text-xs text-gray-700 leading-relaxed">${cleanCatatan}</p>
+                                <p class="text-xs text-gray-700 leading-relaxed font-medium">${cleanCatatan}</p>
                             </div>
                         ` : '';
 
                         tugasHtml = `
                             <div class="mt-4 pt-4 border-t border-gray-100 bg-gray-50 p-4 rounded-lg">
-                                <h4 class="text-sm font-bold text-gray-800 mb-2">📌 Tugas: ${soal.judul}</h4>
+                                <h4 class="text-sm font-bold text-gray-800 mb-2 flex items-center gap-1.5"><i data-lucide="clipboard-list" class="w-4 h-4 text-pastel-primary"></i> Tugas: ${soal.judul}</h4>
                                 <div class="bg-white p-3 rounded border border-gray-200 shadow-sm mt-3">
                                     <span class="text-[10px] uppercase text-gray-400 font-bold block mb-1">Jawaban Terkirim:</span>
-                                    <p class="text-xs text-gray-700 mb-3 whitespace-pre-wrap">${myTugas.jawaban}</p>
+                                    <p class="text-xs text-gray-700 mb-3 whitespace-pre-wrap font-medium">${safeJawabanStudent}</p>
                                     <div class="flex items-center justify-between border-t border-gray-100 pt-3">
-                                        <div><span class="text-[10px] text-gray-500 mr-1">Status:</span> ${statusBadge}</div>
-                                        <div><span class="text-[10px] text-gray-500 mr-1">Nilai:</span> ${nilaiBadge}</div>
+                                        <div><span class="text-[10px] text-gray-500 mr-1 font-semibold">Status:</span> ${statusBadge}</div>
+                                        <div><span class="text-[10px] text-gray-500 mr-1 font-semibold">Nilai:</span> ${nilaiBadge}</div>
                                     </div>
                                     ${catatan}
                                 </div>
@@ -1251,12 +1594,12 @@
                         `;
                     } else {
                         tugasHtml = `
-                            <div class="mt-4 pt-4 border-t border-gray-100 bg-blue-50/40 p-4 rounded-lg border border-blue-100">
-                                <h4 class="text-sm font-bold text-pastel-primary mb-1">📌 Tugas PTM ${item.ptm}: ${soal.judul}</h4>
-                                <p class="text-xs text-gray-600 mb-3 whitespace-pre-wrap">${soal.deskripsi}</p>
+                            <div class="mt-4 pt-4 border-t border-gray-100 bg-blue-50/40 p-4 rounded-lg border border-blue-100 shadow-sm">
+                                <h4 class="text-sm font-bold text-pastel-primary mb-1 flex items-center gap-1.5"><i data-lucide="clipboard-list" class="w-4 h-4 text-pastel-primary"></i> Tugas PTM ${item.ptm}: ${soal.judul}</h4>
+                                <p class="text-xs text-gray-600 mb-3 whitespace-pre-wrap font-medium">${soal.deskripsi}</p>
                                 <div class="space-y-2">
-                                    <textarea id="jawaban-${item.ptm}" rows="3" class="w-full input-pastel rounded-md p-2 text-xs" placeholder="Ketik jawaban ringkas atau link Google Docs Anda di sini..."></textarea>
-                                    <button onclick="submitTugasInline(${item.ptm})" id="btn-submit-${item.ptm}" class="w-full bg-pastel-primary text-white hover:bg-pastel-primaryHover transition-colors font-medium rounded-md p-2 text-xs shadow-sm">Kirim Jawaban</button>
+                                    <textarea id="jawaban-${item.ptm}" rows="3" class="w-full input-pastel rounded-md p-2 text-xs font-medium" placeholder="Ketik jawaban ringkas atau link Google Docs Anda di sini..."></textarea>
+                                    <button onclick="submitTugasInline(${item.ptm})" id="btn-submit-${item.ptm}" class="w-full btn-pastel font-bold rounded-md p-2 text-xs shadow-sm tracking-wide flex items-center justify-center gap-1.5"><i data-lucide="send" class="w-3 h-3"></i> Kirim Jawaban</button>
                                 </div>
                             </div>
                         `;
@@ -1264,23 +1607,23 @@
                 } else {
                     tugasHtml = `
                         <div class="mt-4 pt-4 border-t border-gray-100 text-center pb-2">
-                            <span class="text-xs text-gray-400 italic">Belum ada tagihan tugas untuk pertemuan ini.</span>
+                            <span class="text-xs text-gray-400 italic font-medium flex items-center justify-center gap-1"><i data-lucide="info" class="w-3 h-3"></i> Belum ada tagihan tugas untuk pertemuan ini.</span>
                         </div>
                     `;
                 }
 
                 const card = document.createElement('div');
-                card.className = "glass-card flex flex-col h-full hover:shadow-md transition-shadow relative overflow-hidden group";
+                card.className = "glass-card flex flex-col h-full relative overflow-hidden group";
                 card.innerHTML = `
-                    <div class="absolute top-0 left-0 w-full h-1 bg-pastel-primary opacity-50 group-hover:opacity-100 transition-opacity z-10"></div>
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pastel-primary to-pastel-secondary opacity-75 group-hover:opacity-100 transition-opacity z-10"></div>
                     ${coverImgHtml}
                     <div class="p-5 flex flex-col flex-grow">
                         <div class="flex justify-between items-start mb-3 ${item.image_url ? 'mt-2' : 'mt-1'}">
-                            <span class="text-xs font-bold text-pastel-primary">Pertemuan ${item.ptm}</span>
-                            <span class="text-[10px] font-semibold px-2 py-1 rounded-full ${badgeColor}">${item.fase}</span>
+                            <span class="text-xs font-bold text-gradient">Pertemuan ${item.ptm}</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-full shadow-sm ${badgeColor}">${item.fase}</span>
                         </div>
-                        <h3 class="font-bold text-gray-800 text-lg leading-tight mb-3">${item.judul}</h3>
-                        <div class="text-sm text-gray-600 html-content overflow-y-auto max-h-[250px] pr-2 mb-2">${item.konten}</div>
+                        <h3 class="font-extrabold text-gray-800 text-lg leading-tight mb-3">${item.judul}</h3>
+                        <div class="text-sm text-gray-600 html-content overflow-y-auto max-h-[250px] pr-2 mb-2 font-medium">${item.konten}</div>
                         
                         <!-- Area Tugas Inline -->
                         <div class="mt-auto">
@@ -1290,6 +1633,7 @@
                 `;
                 container.appendChild(card);
             });
+            lucide.createIcons();
         }
     </script>
 </body>
