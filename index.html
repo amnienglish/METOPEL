@@ -53,11 +53,11 @@
             content: "";
             position: fixed;
             top: -15px; left: -15px; right: -15px; bottom: -15px;
-            background-image: url('');
+            background-image: url('https://blogger.googleusercontent.com/img/a/AVvXsEgfAyOrYoq2wCRm6kouUKSH9IN00ugEWKLNorfA-jQ1njqcgHSMzK2s86z4bOfBRRMvHKgBYbOHajQbh5OBMwwh_AtbxVl_Z9phg9BiM6SNsflRuEQVq_DDy8zA3WpmcEq9ExaL34AHDlx-NnG78wKUbQfhPD2UT327YCA6zV6jVYRkG28hBF3uGs0IM5Fa');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            filter: blur(9px); 
+            filter: blur(15px); 
             z-index: -1; 
         }
 
@@ -162,6 +162,18 @@
         
         <!-- 1. LOGIN VIEW -->
         <div id="view-login" class="max-w-md mx-auto mt-10">
+            <!-- PANEL PENGUMUMAN (Akan tampil otomatis jika Dosen mengaktifkannya) -->
+            <div id="login-announcement" class="hidden mb-6 bg-blue-50/90 backdrop-blur-sm border border-blue-200 rounded-xl p-4 shadow-sm relative overflow-hidden transition-all duration-500">
+                <div class="absolute top-0 left-0 w-1 h-full bg-blue-400"></div>
+                <div class="flex items-start gap-3">
+                    <i data-lucide="megaphone" class="w-5 h-5 text-blue-500 shrink-0 mt-0.5 animate-pulse"></i>
+                    <div>
+                        <h4 class="text-sm font-bold text-blue-800 mb-1">Pengumuman Terbaru</h4>
+                        <p id="login-announcement-text" class="text-xs text-blue-700 whitespace-pre-wrap font-medium leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+
             <div class="glass-card p-8">
                 <div class="text-center mb-8">
                     <h2 class="text-3xl font-extrabold text-gradient mb-2">Silakan Login!</h2>
@@ -245,6 +257,8 @@
                 <button onclick="switchDosenTab('soal')" id="btn-tab-soal" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap flex items-center gap-1.5"><i data-lucide="clipboard-list" class="w-4 h-4"></i> Kelola Soal/Tugas</button>
                 <button onclick="switchDosenTab('nilai')" id="btn-tab-nilai" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap flex items-center gap-1.5"><i data-lucide="award" class="w-4 h-4"></i> Kelola Nilai</button>
                 <button onclick="switchDosenTab('tugas')" id="btn-tab-tugas" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4"></i> Assessment AI</button>
+                <button onclick="switchDosenTab('qna')" id="btn-tab-qna" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap flex items-center gap-1.5"><i data-lucide="message-circle" class="w-4 h-4"></i> Tanya Dosen</button>
+                <button onclick="switchDosenTab('pengumuman')" id="btn-tab-pengumuman" class="py-2 px-6 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors whitespace-nowrap flex items-center gap-1.5"><i data-lucide="megaphone" class="w-4 h-4"></i> Pengumuman</button>
             </div>
 
             <!-- TAB 1: Kelola Mahasiswa -->
@@ -500,10 +514,62 @@
                     </table>
                 </div>
             </div>
+
+            <!-- TAB 5: Tanya Dosen (QnA) -->
+            <div id="dosen-tab-qna" class="hidden glass-card p-6 flex flex-col h-full">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 border-b pb-2 gap-3">
+                    <h3 class="text-lg font-extrabold text-gray-800 flex items-center gap-2"><i data-lucide="message-square" class="w-5 h-5 text-pastel-primary"></i> Konsultasi Mahasiswa</h3>
+                    <button onclick="fetchQnA(); renderDosenQnA();" class="text-xs text-pastel-primary font-bold hover:underline flex items-center gap-1"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh</button>
+                </div>
+                <div class="overflow-x-auto overflow-y-auto mt-2 flex-grow" style="max-height: 500px;">
+                    <table class="w-full text-sm text-left text-gray-500">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50/50 sticky top-0 z-10">
+                            <tr>
+                                <th class="px-4 py-3">Mhs / NIM</th>
+                                <th class="px-4 py-3">Pertanyaan</th>
+                                <th class="px-4 py-3">Balasan Dosen</th>
+                                <th class="px-4 py-3 text-center">Status</th>
+                                <th class="px-4 py-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-qna-dosen" class="border-b"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 6: Pengumuman -->
+            <div id="dosen-tab-pengumuman" class="hidden glass-card p-6 flex flex-col">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b pb-2 gap-3">
+                    <h3 class="text-lg font-extrabold text-gray-800 flex items-center gap-2"><i data-lucide="megaphone" class="w-5 h-5 text-pastel-primary"></i> Kelola Pengumuman</h3>
+                </div>
+                <form id="form-pengumuman" onsubmit="savePengumuman(event)" class="space-y-6 max-w-3xl">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Isi Pengumuman (Tampil di Halaman Login Mahasiswa)</label>
+                        <textarea id="pengumuman-konten" rows="5" class="w-full input-pastel rounded-lg p-4 text-sm font-medium leading-relaxed" placeholder="Ketik pengumuman seperti informasi jadwal kuliah, libur, atau deadline tugas di sini..."></textarea>
+                    </div>
+                    
+                    <div class="flex items-center justify-between bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                        <div>
+                            <p class="text-sm font-bold text-gray-800">Status Publikasi</p>
+                            <p class="text-xs text-gray-500 mt-1">Nyalakan *toggle* di samping untuk menampilkan pengumuman ini ke mahasiswa.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input type="checkbox" id="pengumuman-toggle" class="sr-only peer">
+                            <div class="w-14 h-7 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-pastel-primary"></div>
+                        </label>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" id="btn-submit-pengumuman" class="btn-pastel px-6 py-3 rounded-md text-sm font-bold shadow-md flex items-center justify-center gap-2 w-full sm:w-auto">
+                            <i data-lucide="save" class="w-4 h-4"></i> Simpan Pengumuman
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- 3. MAHASISWA DASHBOARD VIEW -->
-        <div id="view-mhs" class="hidden space-y-6">
+        <div id="view-mhs" class="hidden space-y-6 relative">
             <div class="bg-white/80 backdrop-blur-md border border-pastel-primary/30 rounded-xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h2 class="text-3xl font-extrabold text-gradient mb-1">Portal Mahasiswa</h2>
@@ -528,6 +594,11 @@
 
             <!-- Konten Utama Mahasiswa (Materi + Tugas Inline Accordion) -->
             <div id="materi-container" class="flex flex-col gap-4"></div>
+
+            <!-- Floating Chat Button untuk Mahasiswa -->
+            <button onclick="openQnAModal()" class="fixed bottom-6 right-6 bg-pastel-primary text-white p-4 rounded-full shadow-xl hover:bg-pastel-primaryHover hover:-translate-y-1 transition-all z-40 flex items-center justify-center group" title="Tanya Dosen">
+                <i data-lucide="message-circle" class="w-6 h-6 group-hover:scale-110 transition-transform"></i>
+            </button>
         </div>
 
         <!-- MODAL VIEW JAWABAN (DOSEN) -->
@@ -600,6 +671,77 @@
             </div>
         </div>
 
+        <!-- MODAL TANYA DOSEN (MAHASISWA) -->
+        <div id="modal-tanya-dosen" class="fixed inset-0 z-[100] hidden items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full h-[80vh] flex flex-col overflow-hidden transform transition-all">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-pastel-bg shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-pastel-primary text-white flex items-center justify-center shadow-sm">
+                            <i data-lucide="user-check" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-gray-800 leading-tight">Dosen Pembimbing</h3>
+                            <p class="text-xs text-green-500 font-semibold">Tersedia untuk Konsultasi</p>
+                        </div>
+                    </div>
+                    <button onclick="closeQnAModal()" class="text-gray-400 hover:text-red-500 transition-colors bg-white rounded-full p-1 shadow-sm border border-gray-100">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <!-- Chat History Area -->
+                <div id="qna-history-container" class="p-6 overflow-y-auto flex-grow bg-slate-50 flex flex-col gap-4">
+                    <!-- Chat bubbles will be generated here -->
+                </div>
+                
+                <!-- Chat Input Area -->
+                <div class="p-4 bg-white border-t border-gray-100 shrink-0">
+                    <form id="form-tanya-dosen" onsubmit="submitQuestion(event)" class="flex gap-2">
+                        <input type="text" id="input-question" required class="flex-grow input-pastel rounded-full p-3 text-sm focus:outline-none" placeholder="Ketik pertanyaan Anda di sini...">
+                        <button type="submit" id="btn-submit-question" class="bg-pastel-primary text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-pastel-primaryHover transition-colors shrink-0 shadow-sm">
+                            <i data-lucide="send" class="w-5 h-5 ml-1"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL BALAS TANYA DOSEN (DOSEN) -->
+        <div id="modal-balas-qna" class="fixed inset-0 z-[100] hidden items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full flex flex-col overflow-hidden transform transition-all">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-pastel-bg">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <i data-lucide="reply" class="w-5 h-5 text-pastel-primary"></i> Balas Konsultasi
+                    </h3>
+                    <button onclick="closeBalasModal()" class="text-gray-400 hover:text-red-500 transition-colors bg-white rounded-full p-1 shadow-sm border border-gray-100">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div class="p-6 bg-white">
+                    <form id="form-balas-qna" onsubmit="submitBalasan(event)" class="space-y-4">
+                        <input type="hidden" id="balas-qna-id">
+                        
+                        <div class="mb-2 bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 flex items-center gap-1"><i data-lucide="message-circle" class="w-3 h-3"></i> Pertanyaan Mahasiswa</p>
+                            <p id="balas-teks-pertanyaan" class="text-sm font-medium text-gray-800 italic">"..."</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Tulis Balasan Anda</label>
+                            <textarea id="balas-jawaban" required rows="5" class="w-full input-pastel rounded-md p-3 text-sm font-medium leading-relaxed" placeholder="Ketik jawaban atau arahan untuk mahasiswa..."></textarea>
+                        </div>
+                        
+                        <div class="pt-2 flex justify-end gap-2">
+                            <button type="button" onclick="closeBalasModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-sm font-bold hover:bg-gray-300 transition-colors">Batal</button>
+                            <button type="submit" id="btn-submit-balasan" class="btn-pastel px-5 py-2 rounded-md text-sm font-bold shadow-sm flex items-center gap-1.5">
+                                <i data-lucide="send" class="w-4 h-4"></i> Kirim Balasan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <footer class="bg-white/80 backdrop-blur-md border-t border-pastel-border mt-auto py-6">
@@ -627,6 +769,8 @@
         let mahasiswaData = []; 
         let nilaiData = []; 
         let tugasData = []; 
+        let qnaData = []; 
+        let pengumumanData = { id: null, konten: '', is_active: false }; // State khusus pengumuman
         let currentUserNim = ''; 
         let quillEditor;  
 
@@ -704,9 +848,20 @@
                     }
                 }
             });
+            
+            // Fetch pengumuman segera setelah DOM dimuat untuk ditampilkan di login
+            fetchPengumuman();
         });
 
         // --- Fetch Functions ---
+        async function fetchPengumuman() {
+            const { data, error } = await supabaseClient.from('pengumuman').select('*').limit(1);
+            if (!error && data && data.length > 0) {
+                pengumumanData = data[0];
+                renderLoginAnnouncement();
+            }
+        }
+
         async function fetchMateri() {
             const { data, error } = await supabaseClient.from('materi').select('*').order('ptm', { ascending: true });
             if (!error && data) rpsData = data;
@@ -727,9 +882,26 @@
             if (!error && data) tugasData = data;
         }
 
+        async function fetchQnA() {
+            const { data, error } = await supabaseClient.from('konsultasi').select('*').order('created_at', { ascending: true }); // Ascending agar urutan chat dari atas ke bawah
+            if (!error && data) qnaData = data;
+        }
+
         // ==========================================
         // 3. UI CONTROLS
         // ==========================================
+        function renderLoginAnnouncement() {
+            const annContainer = document.getElementById('login-announcement');
+            const annText = document.getElementById('login-announcement-text');
+            
+            if (pengumumanData.is_active && pengumumanData.konten && pengumumanData.konten.trim() !== '') {
+                annText.innerText = pengumumanData.konten;
+                annContainer.classList.remove('hidden');
+            } else {
+                annContainer.classList.add('hidden');
+            }
+        }
+
         function switchView(viewId) {
             document.getElementById('view-login').classList.add('hidden');
             document.getElementById('view-register').classList.add('hidden');
@@ -784,10 +956,12 @@
                     await fetchSoal(); 
                     await fetchNilai(); 
                     await fetchTugas(); 
+                    await fetchQnA(); 
                     renderDosenMateri();
                     renderDosenSoal();
                     renderDosenNilai();
                     renderDosenTugas();
+                    renderDosenQnA();
                 } else {
                     const { data, error } = await supabaseClient
                         .from('mahasiswa')
@@ -806,6 +980,7 @@
                         await fetchSoal(); 
                         await fetchNilai();
                         await fetchTugas();
+                        await fetchQnA(); 
                         renderMateri();
                     }
                 }
@@ -884,7 +1059,7 @@
         // 5. DOSEN FUNCTIONS 
         // ==========================================
         function switchDosenTab(tab) {
-            const tabs = ['mhs', 'materi', 'soal', 'nilai', 'tugas'];
+            const tabs = ['mhs', 'materi', 'soal', 'nilai', 'tugas', 'qna', 'pengumuman'];
             
             tabs.forEach(t => {
                 document.getElementById(`dosen-tab-${t}`).classList.add('hidden');
@@ -898,6 +1073,46 @@
             if (tab === 'soal') renderDosenSoal();
             if (tab === 'nilai') renderDosenNilai();
             if (tab === 'tugas') renderDosenTugas();
+            if (tab === 'qna') renderDosenQnA();
+            if (tab === 'pengumuman') renderDosenPengumuman();
+        }
+
+        function renderDosenPengumuman() {
+            document.getElementById('pengumuman-konten').value = pengumumanData.konten || '';
+            document.getElementById('pengumuman-toggle').checked = pengumumanData.is_active || false;
+        }
+
+        async function savePengumuman(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-pengumuman');
+            const konten = document.getElementById('pengumuman-konten').value.trim();
+            const is_active = document.getElementById('pengumuman-toggle').checked;
+
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Menyimpan...';
+            lucide.createIcons();
+            btn.disabled = true;
+
+            const payload = { konten, is_active };
+            
+            try {
+                let res;
+                if (pengumumanData.id) {
+                    res = await supabaseClient.from('pengumuman').update(payload).eq('id', pengumumanData.id);
+                } else {
+                    res = await supabaseClient.from('pengumuman').insert([payload]);
+                }
+
+                if (res.error) throw new Error(res.error.message);
+
+                alert("Pengumuman berhasil diperbarui!");
+                await fetchPengumuman(); // Refresh state dan UI login
+            } catch (err) {
+                alert("Gagal menyimpan pengumuman: " + err.message);
+            } finally {
+                btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Simpan Pengumuman';
+                lucide.createIcons();
+                btn.disabled = false;
+            }
         }
 
         function renderDosenMateri() {
@@ -1674,7 +1889,186 @@
         }
 
         // ==========================================
-        // 6. MAHASISWA FUNCTIONS (Materi & Tugas Terintegrasi Accordion)
+        // 7. FUNGSI Q&A / KONSULTASI (DOSEN & MAHASISWA)
+        // ==========================================
+        
+        function openQnAModal() {
+            renderStudentQnA();
+            const modal = document.getElementById('modal-tanya-dosen');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeQnAModal() {
+            const modal = document.getElementById('modal-tanya-dosen');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function renderStudentQnA() {
+            const container = document.getElementById('qna-history-container');
+            const myQnA = qnaData.filter(q => String(q.nim) === String(currentUserNim));
+            container.innerHTML = '';
+            
+            if(myQnA.length === 0) {
+                container.innerHTML = '<div class="flex-grow flex items-center justify-center"><p class="text-xs text-gray-400 text-center italic mt-4">Belum ada riwayat pertanyaan. Silakan mulai konsultasi.</p></div>';
+                return;
+            }
+
+            myQnA.forEach(q => {
+                // Balon chat mahasiswa (Kanan)
+                container.innerHTML += `
+                    <div class="flex justify-end mb-2">
+                        <div class="bg-pastel-primary/10 border border-pastel-primary/30 rounded-2xl rounded-tr-sm p-3 max-w-[85%] shadow-sm">
+                            <p class="text-xs text-gray-800 font-medium whitespace-pre-wrap leading-relaxed">${escapeHTML(q.pertanyaan)}</p>
+                        </div>
+                    </div>
+                `;
+                
+                // Balon chat Dosen (Kiri) jika sudah dijawab
+                if(q.status === 'Dijawab' && q.jawaban) {
+                    container.innerHTML += `
+                        <div class="flex justify-start mb-2">
+                            <div class="bg-blue-50 border border-blue-100 rounded-2xl rounded-tl-sm p-3 max-w-[85%] shadow-sm">
+                                <p class="text-[10px] font-bold text-blue-600 mb-1 flex items-center gap-1"><i data-lucide="user-check" class="w-3 h-3"></i> Dosen Pembimbing</p>
+                                <p class="text-xs text-gray-700 font-medium whitespace-pre-wrap leading-relaxed">${escapeHTML(q.jawaban)}</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                     container.innerHTML += `
+                        <div class="flex justify-start mb-2">
+                            <div class="bg-gray-50 border border-gray-100 rounded-2xl rounded-tl-sm p-2 max-w-[85%]">
+                                <p class="text-[10px] text-gray-400 italic">Menunggu balasan dosen...</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            lucide.createIcons();
+            // Scroll otomatis ke bawah melihat pesan terbaru
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function submitQuestion(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-question');
+            const inputField = document.getElementById('input-question');
+            const pertanyaan = inputField.value.trim();
+            
+            if(!pertanyaan) return;
+            
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i>';
+            lucide.createIcons();
+            btn.disabled = true;
+
+            const payload = { nim: currentUserNim, pertanyaan, status: 'Menunggu' };
+            const { error } = await supabaseClient.from('konsultasi').insert([payload]);
+            
+            if (error) {
+                alert("Gagal mengirim pertanyaan: " + error.message);
+            } else {
+                inputField.value = '';
+                await fetchQnA();
+                renderStudentQnA(); // Refresh isi chat
+            }
+            
+            btn.innerHTML = '<i data-lucide="send" class="w-5 h-5 ml-1"></i>';
+            lucide.createIcons();
+            btn.disabled = false;
+        }
+
+        // --- DOSEN QnA FUNCTIONS ---
+        function renderDosenQnA() {
+            const tbody = document.getElementById('table-qna-dosen');
+            if (qnaData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-xs font-medium">Belum ada pertanyaan masuk.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = '';
+            
+            qnaData.forEach((item) => {
+                const mhs = mahasiswaData.find(m => String(m.nim) === String(item.nim));
+                const namaMhs = mhs ? mhs.nama : 'Unknown';
+                
+                let actionBtnHtml = item.status === 'Menunggu' 
+                    ? `<button onclick="openBalasModal('${item.id}')" class="bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-100 px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center justify-center gap-1.5 mx-auto shadow-sm"><i data-lucide="reply" class="w-3 h-3"></i> Balas</button>`
+                    : `<button onclick="openBalasModal('${item.id}')" class="bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-md text-[10px] font-bold transition-all flex items-center justify-center gap-1 mx-auto"><i data-lucide="edit" class="w-3 h-3"></i> Edit Balasan</button>`;
+
+                const statusBadge = item.status === 'Menunggu'
+                    ? `<span class="bg-orange-100 text-orange-600 px-2 py-1 rounded text-[10px] font-bold shadow-sm inline-flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> Menunggu</span>`
+                    : `<span class="bg-green-100 text-green-600 px-2 py-1 rounded text-[10px] font-bold shadow-sm inline-flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i> Dijawab</span>`;
+                
+                const safePertanyaan = escapeHTML(item.pertanyaan);
+                const safeJawaban = item.jawaban ? escapeHTML(item.jawaban) : '-';
+                
+                tr = document.createElement('tr');
+                tr.className = "bg-white border-b hover:bg-gray-50/50 transition-colors";
+                tr.innerHTML = `
+                    <td class="px-4 py-3"><p class="font-bold text-gray-900">${namaMhs}</p><p class="text-xs text-gray-500">${item.nim}</p></td>
+                    <td class="px-4 py-3 text-xs text-gray-600 font-medium max-w-[200px] truncate" title="${safePertanyaan}">${safePertanyaan}</td>
+                    <td class="px-4 py-3 text-xs text-gray-600 font-medium max-w-[200px] truncate" title="${safeJawaban}">${safeJawaban}</td>
+                    <td class="px-4 py-3 text-center">${statusBadge}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-center">${actionBtnHtml}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function openBalasModal(id) {
+            const qna = qnaData.find(q => String(q.id) === String(id));
+            if (!qna) return;
+            
+            document.getElementById('balas-qna-id').value = id;
+            document.getElementById('balas-teks-pertanyaan').innerText = `"${qna.pertanyaan}"`;
+            document.getElementById('balas-jawaban').value = qna.jawaban || '';
+            
+            const modal = document.getElementById('modal-balas-qna');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+            
+            // Auto focus
+            setTimeout(() => document.getElementById('balas-jawaban').focus(), 100);
+        }
+
+        function closeBalasModal() {
+            const modal = document.getElementById('modal-balas-qna');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function submitBalasan(e) {
+            e.preventDefault();
+            const id = document.getElementById('balas-qna-id').value;
+            const jawaban = document.getElementById('balas-jawaban').value.trim();
+            const btn = document.getElementById('btn-submit-balasan');
+            
+            if(!jawaban) return alert("Balasan tidak boleh kosong");
+
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Mengirim...';
+            lucide.createIcons();
+            btn.disabled = true;
+
+            const { error } = await supabaseClient.from('konsultasi').update({ jawaban, status: 'Dijawab' }).eq('id', id);
+            
+            if (error) {
+                alert("Gagal mengirim balasan: " + error.message);
+            } else {
+                closeBalasModal();
+                await fetchQnA();
+                renderDosenQnA();
+            }
+            
+            btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i> Kirim Balasan';
+            lucide.createIcons();
+            btn.disabled = false;
+        }
+
+        // ==========================================
+        // 8. MAHASISWA FUNCTIONS (Materi & Tugas Terintegrasi Accordion)
         // ==========================================
         
         async function refreshMhsData(event) {
@@ -1686,6 +2080,7 @@
                 await fetchSoal();
                 await fetchNilai();
                 await fetchTugas();
+                await fetchQnA(); // Refresh data chat juga
                 renderMateri();
                 btn.innerHTML = '<i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh';
                 lucide.createIcons();
