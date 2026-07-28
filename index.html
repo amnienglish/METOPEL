@@ -372,6 +372,7 @@
                                 <tr>
                                     <th class="px-4 py-3">Ptm</th>
                                     <th class="px-4 py-3">Judul Materi & Preview Konten</th>
+                                    <th class="px-4 py-3 text-center">Status Kelas</th>
                                     <th class="px-4 py-3 text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -1280,7 +1281,7 @@
         function renderDosenMateri() {
             const tbody = document.getElementById('table-materi');
             if (rpsData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-xs font-medium">Belum ada materi.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-4 text-center text-xs font-medium">Belum ada materi.</td></tr>';
                 return;
             }
             tbody.innerHTML = '';
@@ -1288,11 +1289,22 @@
                 const tr = document.createElement('tr');
                 tr.className = "bg-white border-b hover:bg-gray-50/50 transition-colors";
                 const plainText = item.konten ? item.konten.replace(/<[^>]*>?/gm, '') : '';
+                
+                // Jika is_active tidak ada/null di database lama, defaultnya adalah true (terbuka)
+                const isActive = item.is_active !== false; 
+                
                 tr.innerHTML = `
                     <td class="px-4 py-3 font-bold text-gray-900">${item.ptm}</td>
                     <td class="px-4 py-3">
                         <p class="font-bold text-gray-800">${item.judul}</p>
                         <p class="text-xs text-gray-400 mt-1 line-clamp-1">${plainText}</p>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" onchange="toggleStatusKelas('${item.id}', ${isActive})" class="sr-only peer" ${isActive ? 'checked' : ''}>
+                            <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-pastel-primary"></div>
+                        </label>
+                        <p class="text-[10px] font-bold mt-1 ${isActive ? 'text-pastel-primary' : 'text-gray-400'}">${isActive ? 'Terbuka' : 'Ditutup'}</p>
                     </td>
                     <td class="px-4 py-3 whitespace-nowrap">
                         <div class="flex items-center justify-center gap-3">
@@ -1304,6 +1316,18 @@
                 tbody.appendChild(tr);
             });
             lucide.createIcons();
+        }
+
+        async function toggleStatusKelas(id, currentStatus) {
+            const newStatus = !currentStatus;
+            try {
+                const { error } = await supabaseClient.from('materi').update({ is_active: newStatus }).eq('id', id);
+                if (error) throw new Error(error.message);
+                await fetchMateri(); // Tarik data terbaru dari DB
+                renderDosenMateri(); // Render ulang tabel Dosen
+            } catch (err) {
+                customAlert("Gagal mengubah status kelas: " + err.message);
+            }
         }
 
         async function handleAddMateri(e) {
@@ -2584,6 +2608,8 @@
             let ptmUjianList = []; 
 
             sortedRps.forEach((item) => {
+                const isActive = item.is_active !== false; // Status kelas dari tabel Dosen
+
                 let badgeColor = 'bg-gray-100 text-gray-600';
                 const faseUpper = item.fase.toUpperCase();
                 const isUjian = faseUpper.includes('UTS') || faseUpper.includes('UAS');
@@ -2669,7 +2695,7 @@
                                 </div>
                             `;
                             
-                            if (isUjian) {
+                            if (isUjian && isActive) {
                                 ptmUjianList.push({ type: 'edit', ptm: item.ptm, content: myTugas.jawaban });
                             }
                         } else {
@@ -2730,7 +2756,7 @@
                             </div>
                         `;
 
-                        if (isUjian) {
+                        if (isUjian && isActive) {
                             ptmUjianList.push({ type: 'submit', ptm: item.ptm, content: '' });
                         }
                     }
@@ -2743,18 +2769,47 @@
                     isSelesai = false; 
                 }
 
-                const cardOpacity = isSelesai ? "opacity-70 hover:opacity-100 bg-gray-100/80" : "bg-white/95 shadow-md ring-1 ring-pastel-primary/30";
-                const borderGradient = isSelesai ? "from-green-400 to-emerald-500" : "from-pastel-primary to-pastel-secondary";
-                const titleColor = isSelesai ? "text-gray-500" : "text-gray-800";
-                const circleBg = isSelesai ? "bg-green-100 text-green-600 border border-green-200" : "bg-pastel-primary text-white shadow-md";
-                const ceklisHtml = isSelesai ? `<div class="bg-green-100/80 p-1.5 rounded-full ml-2"><i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i></div>` : '';
+                let cardOpacity = isSelesai ? "opacity-70 hover:opacity-100 bg-gray-100/80" : "bg-white/95 shadow-md ring-1 ring-pastel-primary/30";
+                let borderGradient = isSelesai ? "from-green-400 to-emerald-500" : "from-pastel-primary to-pastel-secondary";
+                let titleColor = isSelesai ? "text-gray-500" : "text-gray-800";
+                let circleBg = isSelesai ? "bg-green-100 text-green-600 border border-green-200" : "bg-pastel-primary text-white shadow-md";
+                
+                let iconAksiHtml = '';
+                let onClickAction = `onclick="toggleMateri(${item.ptm})"`;
+                let bodyHtmlContent = '';
+
+                if (!isActive) {
+                    // Tampilan jika kelas ditutup oleh Dosen
+                    cardOpacity = "opacity-60 bg-gray-50 border-dashed border-2 border-gray-300";
+                    borderGradient = "from-gray-300 to-gray-400";
+                    titleColor = "text-gray-400";
+                    circleBg = "bg-gray-300 text-white shadow-none";
+                    iconAksiHtml = `<div class="bg-gray-200 p-1.5 rounded-full ml-2" title="Kelas Ditutup"><i data-lucide="lock" class="w-4 h-4 text-gray-500"></i></div>`;
+                    onClickAction = `onclick="customAlert('Akses ke pertemuan ini sedang ditutup/terkunci oleh Dosen.')"`;
+                    bodyHtmlContent = ``; // Jangan render isinya untuk keamanan
+                } else {
+                    // Tampilan jika kelas terbuka
+                    iconAksiHtml = isSelesai ? `<div class="bg-green-100/80 p-1.5 rounded-full ml-2"><i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i></div>` : '';
+                    bodyHtmlContent = `
+                        <div id="materi-body-${item.ptm}" class="hidden border-t border-gray-100 bg-white/80 backdrop-blur-sm">
+                            ${coverImgHtml}
+                            <div class="p-6">
+                                <div class="text-sm text-gray-600 html-content mb-6 font-medium">${item.konten}</div>
+                                <div class="mt-4 pt-6 border-t border-gray-200/60">
+                                    ${tugasHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
 
                 const card = document.createElement('div');
                 card.className = `glass-card flex flex-col overflow-hidden relative transition-all duration-300 ${cardOpacity}`;
                 
+                // BAGIAN HEADER KARTU MAHASISWA
                 const headerHtml = `
                     <div class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b ${borderGradient} z-10"></div>
-                    <div class="p-5 cursor-pointer flex justify-between items-center hover:bg-white/60 transition-colors pl-8" onclick="toggleMateri(${item.ptm})">
+                    <div class="p-5 cursor-pointer flex justify-between items-center hover:bg-white/60 transition-colors pl-8" ${onClickAction}>
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 rounded-full ${circleBg} flex items-center justify-center font-extrabold shrink-0 transition-colors">
                                 ${item.ptm}
@@ -2766,29 +2821,16 @@
                                     </div>
                                     <h3 class="font-extrabold ${titleColor} text-base md:text-lg leading-tight flex items-center">${item.judul}</h3>
                                 </div>
-                                ${ceklisHtml}
+                                ${iconAksiHtml}
                             </div>
                         </div>
-                        <div class="text-pastel-primary bg-pastel-primary/10 p-2 rounded-full shrink-0">
-                            <i data-lucide="chevron-down" id="icon-chevron-${item.ptm}" class="w-5 h-5 transition-transform duration-300"></i>
+                        <div class="${isActive ? 'text-pastel-primary bg-pastel-primary/10' : 'text-gray-400 bg-gray-200'} p-2 rounded-full shrink-0">
+                            <i data-lucide="${isActive ? 'chevron-down' : 'lock'}" id="icon-chevron-${item.ptm}" class="w-5 h-5 transition-transform duration-300"></i>
                         </div>
                     </div>
                 `;
 
-                const bodyHtml = `
-                    <div id="materi-body-${item.ptm}" class="hidden border-t border-gray-100 bg-white/80 backdrop-blur-sm">
-                        ${coverImgHtml}
-                        <div class="p-6">
-                            <div class="text-sm text-gray-600 html-content mb-6 font-medium">${item.konten}</div>
-                            
-                            <div class="mt-4 pt-6 border-t border-gray-200/60">
-                                ${tugasHtml}
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                card.innerHTML = headerHtml + bodyHtml;
+                card.innerHTML = headerHtml + bodyHtmlContent;
                 container.appendChild(card);
             });
             
