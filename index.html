@@ -1646,31 +1646,46 @@
 
         // --- MANAJEMEN NILAI & TUGAS AI DOSEN ---
         
+        // FUNGSI BARU: Export Nilai ke Excel (CSV format)
         function exportToExcel() {
             if (mahasiswaData.length === 0) {
                 customAlert("Belum ada data mahasiswa untuk direkap.");
                 return;
             }
 
-            const utsMateri = rpsData.find(m => m.fase.toUpperCase().includes('UTS'));
-            const uasMateri = rpsData.find(m => m.fase.toUpperCase().includes('UAS'));
-            const ptmUTS = utsMateri ? parseInt(utsMateri.ptm) : -1;
-            const ptmUAS = uasMateri ? parseInt(uasMateri.ptm) : -1;
+            // PENCARIAN PTM UTS DAN UAS LEBIH FLEKSIBEL
+            // Mencari kata "UTS", "UAS", "TENGAH SEMESTER", "AKHIR SEMESTER" pada Fase atau Judul
+            let ptmUTS = 8;  // Default fallback ke PTM 8 jika tidak diberi nama spesifik
+            let ptmUAS = 16; // Default fallback ke PTM 16 jika tidak diberi nama spesifik
+
+            const findUjian = (arr, keywords) => arr.find(x => 
+                (x.fase && keywords.some(k => x.fase.toUpperCase().includes(k))) || 
+                (x.judul && keywords.some(k => x.judul.toUpperCase().includes(k)))
+            );
+
+            const utsItem = findUjian(rpsData, ['UTS', 'TENGAH SEMESTER']) || findUjian(soalData, ['UTS', 'TENGAH SEMESTER']);
+            const uasItem = findUjian(rpsData, ['UAS', 'AKHIR SEMESTER']) || findUjian(soalData, ['UAS', 'AKHIR SEMESTER']);
+
+            if (utsItem && utsItem.ptm) ptmUTS = parseInt(utsItem.ptm);
+            if (uasItem && uasItem.ptm) ptmUAS = parseInt(uasItem.ptm);
 
             const totalSoal = soalData.length;
 
+            // Header CSV (Menggunakan TITIK KOMA ';' agar terbaca sebagai kolom di Excel Indonesia)
             let csvContent = "NIM;Nama Mahasiswa;Kehadiran (%);Rata-rata Tugas;Nilai UTS;Nilai UAS;Nilai Total\n";
 
             mahasiswaData.forEach(mhs => {
                 const nim = mhs.nim;
-                const nama = `"${mhs.nama}"`; 
+                const nama = `"${mhs.nama}"`; // Dikutip agar aman jika ada koma di nama
 
                 const myNilaiList = nilaiData.filter(n => String(n.nim) === String(nim));
                 const myTugasList = tugasData.filter(t => String(t.nim) === String(nim));
                 
+                // 1. Kehadiran
                 const tugasSelesai = myTugasList.length;
                 let kehadiran = totalSoal > 0 ? Math.round((tugasSelesai / totalSoal) * 100) : 0;
 
+                // 2. Ambil Nilai Khusus
                 let nilaiUTS = 0;
                 let nilaiUAS = 0;
                 let skorTugas = [];
@@ -1686,16 +1701,23 @@
                     }
                 });
 
+                // 3. Rata-rata Tugas Biasa
                 let rataRataTugas = 0;
                 if (skorTugas.length > 0) {
                     rataRataTugas = skorTugas.reduce((a, b) => a + b, 0) / skorTugas.length;
                 }
 
+                // 4. Perhitungan Nilai Total (Misal: Kehadiran 10%, Tugas 30%, UTS 30%, UAS 30%)
                 const nilaiTotal = (kehadiran * 0.10) + (rataRataTugas * 0.30) + (nilaiUTS * 0.30) + (nilaiUAS * 0.30);
+
+                // Mengubah titik desimal menjadi koma agar format angkanya sesuai dengan Excel Indonesia
                 const formatDesimal = (num) => num.toFixed(2).replace('.', ',');
+
+                // Tambahkan baris data dengan pemisah TITIK KOMA (;)
                 csvContent += `${nim};${nama};${kehadiran};${formatDesimal(rataRataTugas)};${nilaiUTS};${nilaiUAS};${formatDesimal(nilaiTotal)}\n`;
             });
 
+            // Tambahkan BOM (\uFEFF) agar Excel mengenali file ini sebagai tabel UTF-8 dengan sempurna
             const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             
@@ -1709,6 +1731,7 @@
             document.body.removeChild(link);
         }
 
+        // Fungsi pembantu untuk memperbarui opsi dropdown filter PTM
         function updateFilterOptions(selectId, dataArray) {
             const select = document.getElementById(selectId);
             if (!select) return;
